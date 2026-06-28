@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-28  
 **Scope:** Full read-only audit of `construction_robot` repository  
-**Status:** Video data extraction is **ongoing**. This audit does **not** judge the dataset as final.
+**Status:** Stage 1 video data extraction is **complete** (pending human review). Readiness label: **framework_ready** (not seed_dataset_ready). Stage 2 (GAN seed conversion) awaits human sign-off.
 
 ---
 
@@ -54,15 +54,15 @@ construction_robot/
 
 ## 2. Data files and row counts
 
-| File | Rows (approx.) |
-|------|----------------|
-| video_metadata.csv | 31 |
-| video_segments.csv | 45 |
-| robot_video_observations.csv | 10 |
+| File | Rows |
+|------|------|
+| video_metadata.csv | 32 |
+| video_segments.csv | 46 |
+| robot_video_observations.csv | 11 |
 | mivan_video_observations.csv | 30 |
-| cleaned_video_dataset.csv | 16 |
+| cleaned_video_dataset.csv | 17 |
 | manufacturer_specs.csv | 10 |
-| robot_source_candidates.csv | 8+ |
+| robot_source_candidates.csv | 8 (4 deferred_post_stage1) |
 
 ---
 
@@ -143,11 +143,11 @@ Risk is **visible and controlled** via `duplicate_group_id` and `independent_sam
 
 ---
 
-## 10. Priority fixes before further extraction
+## 10. Priority items before Stage 2
 
-1. Add comparison robot sources with verified URLs to candidates file and screen individually
-2. Normalize legacy `source_type` hyphen/underscore values
-3. Promote additional robot activity types (rebar tying, inspection) when suitable videos found
+1. Human review and sign-off on Stage 1 coded datasets
+2. Optional post-review expansion: 4 robot candidates marked `deferred_post_stage1` (not blocking Stage 1)
+3. Normalize legacy `source_type` hyphen/underscore values where still present
 4. Keep duplicate controls updated when parallel uploads are added
 5. Do **not** proceed to GAN seed conversion (Stage 2) until Stage 1 review sign-off
 
@@ -155,4 +155,4 @@ Risk is **visible and controlled** via `duplicate_group_id` and `independent_sam
 
 ## Audit conclusion
 
-The repository is **logically structured** for ongoing video-informed extraction. Data quality controls and research-safe framing are in place. Extraction remains **in progress**; the dataset is suitable for framework development demonstration, not final quantitative claims.
+Stage 1 extraction is **complete**; human review is pending before Stage 2. The repository is **logically structured** for video-informed, robot-agnostic extraction. Data quality controls and research-safe framing are in place. Readiness label: **framework_ready** — suitable for methodology demonstration, not seed_dataset_ready or final quantitative claims.
