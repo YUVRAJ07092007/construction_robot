@@ -48,6 +48,7 @@ activity_groups:
     description: Activity not confidently identifiable
 
 legacy_label_map:
+  # Robot / cleaned unified labels
   concrete_leveling: fresh_concrete_leveling
   concrete_finishing: post_cast_coating
   coating_finishing: post_cast_coating
@@ -55,8 +56,39 @@ legacy_label_map:
   formwork: formwork_work
   formwork_process: formwork_work
   formwork_components: formwork_work
+  formwork_erection: formwork_work
   wall_panel_erection: formwork_work
   post_cast_finishing: post_cast_surface_preparation
+  # Mivan observation shorthand
+  rebar: rebar_work
+  MEP: mep_conduit_work
+  mep: mep_conduit_work
+  concrete_pour: concrete_pouring
+  finishing: post_cast_surface_preparation
+  stripping: formwork_work
+  # Cleaned-dataset legacy labels
+  slab_reinforcement: rebar_work
+  mep_slab_work: mep_conduit_work
+  deshuttering: formwork_work
+  # Segment-level granular Mivan labels
+  beam_reinforcement: rebar_work
+  bracket_installation: formwork_work
+  building_level_check: inspection
+  concrete_pour_and_vibration: concrete_pouring
+  electrical_mep: mep_conduit_work
+  external_wall_erection: formwork_work
+  grid_line_and_thesi: layout_marking
+  grid_line_drawing_reading: layout_marking
+  ground_survey: layout_marking
+  kicker_level_deviation: inspection
+  post_concrete_activity: other
+  post_concrete_survey: inspection
+  setting_out_mivan: layout_marking
+  shuttering_quality_check: inspection
+  slab_supporting_and_quality_check: formwork_work
+  vertical_rebar_and_wall_prep: rebar_work
+  vertical_rebar_fixing: rebar_work
+  wall_tie_hole_filling: post_cast_surface_preparation
 
 correction_principle: >
   Do not label indoor coating or hardened-surface finishing as fresh concrete finishing.

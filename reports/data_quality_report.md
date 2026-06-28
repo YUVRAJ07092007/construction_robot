@@ -36,7 +36,7 @@
 
 **Robot:** video_estimated: 9, video_observed: 1
 
-**Cleaned:** video-estimated: 10, video-observed: 6
+**Cleaned:** video_estimated: 10, video_observed: 6
 
 ## Coding-confidence distribution
 

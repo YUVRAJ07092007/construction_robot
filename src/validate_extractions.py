@@ -5,7 +5,13 @@ from __future__ import annotations
 import csv
 import sys
 from dataclasses import dataclass, field
+from functools import lru_cache
 from pathlib import Path
+
+try:
+    import yaml
+except ImportError:  # pragma: no cover
+    yaml = None
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -66,6 +72,30 @@ class ValidationResult:
 
     def add(self, level: str, message: str) -> None:
         getattr(self, level).append(message)
+
+
+@lru_cache(maxsize=1)
+def load_activity_taxonomy() -> tuple[frozenset[str], dict[str, str]]:
+    path = ROOT / "config" / "activity_taxonomy.yaml"
+    if yaml is None:
+        raise RuntimeError("PyYAML required for activity taxonomy validation")
+    with path.open(encoding="utf-8") as handle:
+        data = yaml.safe_load(handle)
+    groups = frozenset(data["activity_groups"].keys())
+    legacy = {str(k): str(v) for k, v in (data.get("legacy_label_map") or {}).items()}
+    return groups, legacy
+
+
+def resolve_activity_label(label: str, groups: frozenset[str], legacy: dict[str, str]) -> str | None:
+    if not label or label.strip().lower() in {"", "unknown", "other"}:
+        return label
+    raw = label.strip()
+    if raw in groups:
+        return raw
+    mapped = legacy.get(raw) or legacy.get(raw.lower())
+    if mapped in groups:
+        return mapped
+    return None
 
 
 def read_csv(path: Path) -> list[dict[str, str]]:
@@ -153,6 +183,16 @@ def validate_cleaned_logic(result: ValidationResult, rows: list[dict[str, str]])
             result.add("errors", f"{oid}: video observation must not use evidence {evidence}")
         if "rebar" in activity and stage and stage not in {"pre-pour", "unknown", ""}:
             result.add("errors", f"{oid}: rebar activity should have workflow_stage pre-pour")
+        if any(x in activity for x in ("concrete_pour", "concrete_pouring")) and stage and stage not in {"pour", "unknown", ""}:
+            result.add("errors", f"{oid}: concrete pouring activity should have workflow_stage pour")
+        if "fresh_concrete_finishing" in activity and surface:
+            if not any(w in surface for w in WET_SURFACES | {"partially_set"}) and surface not in {"", "unknown"}:
+                result.add("warnings", f"{oid}: fresh concrete finishing expects wet or partially set surface")
+        if "post_cast_floor_grinding" in activity and surface:
+            if not any(h in surface for h in HARDENED_SURFACES) and surface not in {"", "unknown"}:
+                result.add("warnings", f"{oid}: post-cast grinding expects hardened surface")
+        if "post_cast_coating" in activity and any(x in activity for x in ("fresh_concrete", "leveling")):
+            result.add("errors", f"{oid}: post-cast coating must not be labelled as fresh concrete finishing")
         if any(x in activity for x in ("leveling", "fresh_concrete")) and surface:
             if not any(w in surface for w in WET_SURFACES) and surface != "unknown":
                 result.add("warnings", f"{oid}: leveling/fresh activity expects wet surface")
@@ -162,7 +202,16 @@ def validate_cleaned_logic(result: ValidationResult, rows: list[dict[str, str]])
         if "coating" in activity and "wet" in surface:
             result.add("warnings", f"{oid}: post-cast coating should not use wet surface label")
         if congestion == "high" and access == "open":
-            result.add("warnings", f"{oid}: high congestion conflicts with open access_condition")
+            note = (row.get("label_revision_note") or row.get("parallel_source_note") or "").strip()
+            if not note:
+                result.add("warnings", f"{oid}: high congestion conflicts with open access_condition without note")
+            else:
+                result.add("warnings", f"{oid}: high congestion paired with open access_condition (see note)")
+        exposure = (row.get("safety_exposure") or "").lower()
+        if exposure == "high" and safety in {"good", "excellent"}:
+            note = (row.get("label_revision_note") or row.get("parallel_source_note") or "").strip()
+            if not note:
+                result.add("warnings", f"{oid}: high safety exposure conflicts with good safety_condition without note")
         if duration_validity == "valid" and confidence == "low":
             result.add("warnings", f"{oid}: low confidence with valid duration")
         if visibility == "low" and confidence == "high":
@@ -173,6 +222,52 @@ def validate_cleaned_logic(result: ValidationResult, rows: list[dict[str, str]])
             result.add("errors", f"{oid}: cleaned row must not be usable_for_productivity=yes")
         if "manufacturer" in source_type:
             result.add("errors", f"{oid}: manufacturer data must not appear in cleaned video dataset")
+
+
+def validate_activity_labels(
+    result: ValidationResult,
+    rows: list[dict[str, str]],
+    label: str,
+    field: str,
+    *,
+    critical: bool = False,
+) -> None:
+    groups, legacy = load_activity_taxonomy()
+    level = "errors" if critical else "warnings"
+    for row in rows:
+        raw = (row.get(field) or "").strip()
+        if not raw:
+            continue
+        if resolve_activity_label(raw, groups, legacy) is None:
+            rid = row.get("observation_id") or row.get("segment_id") or row.get("video_id") or "?"
+            result.add(level, f"{label} {rid}: activity '{raw}' not in activity_taxonomy.yaml")
+
+
+def validate_mivan_observations(result: ValidationResult, rows: list[dict[str, str]]) -> None:
+    for row in rows:
+        oid = row.get("observation_id", "?")
+        evidence = (row.get("evidence_level") or "").upper()
+        source = (row.get("source_type") or "").replace("-", "_")
+        if evidence and evidence not in VIDEO_EVIDENCE_LEVELS:
+            result.add("errors", f"{oid}: mivan observation must use E1 or E2, got '{evidence}'")
+        if source == "manufacturer_reported":
+            result.add("errors", f"{oid}: manufacturer_reported must not appear in mivan observations")
+        productivity = (row.get("usable_for_productivity") or "").lower()
+        if productivity == "yes":
+            result.add("errors", f"{oid}: mivan observation must not be usable_for_productivity=yes")
+        congestion = (row.get("congestion_level") or "").lower()
+        access = (row.get(ACCESS_CONDITION_FIELD) or "").lower()
+        exposure = (row.get("safety_exposure") or "").lower()
+        safety = (row.get("safety_condition") or "").lower()
+        note = (row.get("parallel_source_note") or "").strip()
+        if congestion == "high" and access == "open" and not note:
+            result.add("warnings", f"{oid}: high congestion conflicts with open access_condition without note")
+        if exposure == "high" and safety in {"good", "excellent"} and not note:
+            result.add("warnings", f"{oid}: high safety exposure conflicts with good safety_condition without note")
+        data_use = (row.get("data_use") or "").lower()
+        confidence = (row.get("coding_confidence") or "").lower()
+        if data_use == "modelling_ready" and confidence == "low":
+            result.add("errors", f"{oid}: low-confidence mivan record marked modelling_ready")
 
 
 def validate_robot_observations(result: ValidationResult, rows: list[dict[str, str]]) -> None:
@@ -271,10 +366,18 @@ def main() -> int:
 
     validate_suitability_scores(result, metadata)
     validate_segments(result, segments)
+    validate_activity_labels(result, segments, "segment", "activity_type")
     validate_cleaned_logic(result, cleaned)
+    validate_activity_labels(result, cleaned, "cleaned", "activity_type", critical=True)
     validate_robot_observations(result, robot)
+    validate_activity_labels(result, robot, "robot", "robot_activity_type", critical=True)
+    validate_mivan_observations(result, mivan)
+    validate_activity_labels(result, mivan, "mivan", "slab_activity_type", critical=True)
     validate_manufacturer_specs(result, specs)
     validate_duplicate_controls(result, metadata, "video")
+    validate_duplicate_controls(result, segments, "segment")
+    validate_duplicate_controls(result, robot, "robot")
+    validate_duplicate_controls(result, mivan, "mivan")
     validate_duplicate_controls(result, cleaned, "cleaned")
 
     write_reports(result)

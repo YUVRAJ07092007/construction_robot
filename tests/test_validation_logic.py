@@ -103,3 +103,9 @@ class TestValidationLogic:
         rows = _rows(SEG_HEADER, ("S2", "4", "", "invalid", "no", "formwork"))
         v.validate_segments(result, rows)
         assert any("below minimum" in e for e in result.errors)
+
+    def test_invalid_activity_label_in_cleaned(self):
+        result = v.ValidationResult()
+        rows = _rows(CLEAN_HEADER, ("O7", "not_in_taxonomy", "pre-pour", "", "low", "open", "good", "invalid", "medium", "high", "E2", "video_estimated", "structured_coding", "no"))
+        v.validate_activity_labels(result, rows, "cleaned", "activity_type", critical=True)
+        assert any("not in activity_taxonomy" in e for e in result.errors)
