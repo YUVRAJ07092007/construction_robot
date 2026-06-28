@@ -1,0 +1,5 @@
+observation_id,video_id,segment_id,robot_activity_type,operating_surface,movement_pattern,guidance_mode,operator_count_visible,assistant_count_visible,setup_visible,setup_complexity,operational_continuity,interruption_count,obstacle_presence,human_robot_separation,safety_condition,edge_condition,robot_transport_requirement,task_duration_observed,duration_validity,evidence_level,coding_confidence
+OBS-R02-001,R02,R02-S01,concrete_leveling,wet_concrete,linear,unknown,1,0,no,unknown,continuous,0,yes,medium,moderate,not_visible,unknown,16,invalid,E1,medium
+OBS-R05-001,R05,R05-S01,concrete_finishing,hardened_concrete,grid-based,autonomous,0,0,no,unknown,continuous,0,no,high,good,not_visible,unknown,60,invalid,E2,medium
+OBS-R06-001,R06,R06-S01,floor_grinding,hardened_concrete,guided,autonomous,0,0,no,unknown,continuous,0,no,high,good,not_visible,unknown,178,invalid,E2,medium
+OBS-R07-001,R07,R07-S01,concrete_finishing,hardened_concrete,grid-based,autonomous,0,0,no,unknown,continuous,0,no,high,good,not_visible,unknown,215,invalid,E2,medium

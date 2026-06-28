@@ -1,0 +1,39 @@
+segment_id,video_id,start_time,end_time,segment_duration_sec,activity_type,segment_category,segment_quality,duration_validity,reason_for_rejection
+M01-S01,M01,00:00:41,00:02:00,79,grid_line_and_thesi,mivan_workflow,medium,invalid,narrated montage not real-time task duration
+M01-S02,M01,00:02:00,00:04:20,140,vertical_rebar_and_wall_prep,mivan_workflow,medium,invalid,narrated montage not real-time task duration
+M01-S03,M01,00:04:21,00:07:32,191,wall_panel_erection,mivan_workflow,high,invalid,narrated montage not real-time task duration
+M01-S04,M01,00:07:33,00:08:23,50,beam_reinforcement,mivan_workflow,medium,invalid,narrated montage not real-time task duration
+M01-S05,M01,00:08:24,00:10:19,115,slab_reinforcement,mivan_workflow,medium,invalid,narrated montage not real-time task duration
+M01-S06,M01,00:10:20,00:10:50,30,electrical_mep,mivan_workflow,medium,invalid,narrated montage not real-time task duration
+M01-S07,M01,00:11:23,00:12:15,52,slab_supporting_and_quality_check,mivan_workflow,medium,invalid,narrated montage not real-time task duration
+M01-S08,M01,00:12:19,00:12:46,27,concrete_pour_and_vibration,mivan_workflow,low,invalid,narration-heavy; pour not continuously visible
+R02-S01,R02,00:00:00,00:00:16,16,concrete_leveling,robot_operation,high,invalid,promotional short with text overlay
+M02-S01,M02,00:02:44,00:12:35,591,ground_survey,mivan_workflow,medium,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S02,M02,00:12:35,00:15:26,171,setting_out_mivan,mivan_workflow,medium,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S03,M02,00:15:26,00:18:36,190,grid_line_drawing_reading,mivan_workflow,medium,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S04,M02,00:18:36,00:19:23,47,vertical_rebar_fixing,mivan_workflow,high,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S05,M02,00:19:23,00:22:51,208,formwork_erection,mivan_workflow,high,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S06,M02,00:22:51,00:24:32,101,external_wall_erection,mivan_workflow,high,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S07,M02,00:24:32,00:33:29,537,shuttering_quality_check,mivan_workflow,medium,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S08,M02,00:33:29,00:35:44,135,kicker_level_deviation,mivan_workflow,medium,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S09,M02,00:35:44,00:38:22,158,mep_slab_work,mivan_workflow,high,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S10,M02,00:38:22,00:41:47,205,concrete_pour,mivan_workflow,high,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S11,M02,00:41:47,00:42:41,54,post_concrete_activity,mivan_workflow,medium,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S12,M02,00:42:41,00:45:33,172,post_concrete_survey,mivan_workflow,medium,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S13,M02,00:45:33,00:47:12,99,deshuttering,mivan_workflow,high,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S14,M02,00:47:12,00:47:45,33,bracket_installation,mivan_workflow,medium,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S15,M02,00:47:45,00:48:11,26,wall_tie_hole_filling,mivan_workflow,low,invalid,chapter-based field documentary; timing for workflow reference only
+M02-S16,M02,00:48:11,00:51:41,210,building_level_check,mivan_workflow,medium,invalid,chapter-based field documentary; timing for workflow reference only
+R05-S01,R05,00:00:00,00:01:00,60,concrete_finishing,robot_operation,high,invalid,chapter-based or promotional footage; timing for workflow reference only
+R06-S01,R06,00:00:00,00:02:58,178,floor_grinding,robot_operation,high,invalid,chapter-based or promotional footage; timing for workflow reference only
+R07-S01,R07,00:00:00,00:03:35,215,coating_finishing,robot_operation,high,invalid,chapter-based or promotional footage; timing for workflow reference only
+M03-S01,M03,00:00:18,00:02:33,135,formwork_components,mivan_workflow,medium,invalid,chapter-based or promotional footage; timing for workflow reference only
+M03-S02,M03,00:02:33,00:06:50,257,formwork_process,mivan_workflow,medium,invalid,chapter-based or promotional footage; timing for workflow reference only
+M05-S01,M05,00:00:37,00:01:51,73,grid_line_and_thesi,mivan_workflow,medium,invalid,parallel M01 upload; bounds scaled from M01 transcript alignment
+M05-S02,M05,00:01:51,00:04:00,129,vertical_rebar_and_wall_prep,mivan_workflow,medium,invalid,parallel M01 upload; bounds scaled from M01 transcript alignment
+M05-S03,M05,00:04:01,00:06:58,176,wall_panel_erection,mivan_workflow,medium,invalid,parallel M01 upload; bounds scaled from M01 transcript alignment
+M05-S04,M05,00:06:59,00:07:45,46,beam_reinforcement,mivan_workflow,medium,invalid,parallel M01 upload; bounds scaled from M01 transcript alignment
+M05-S05,M05,00:07:46,00:09:33,106,slab_reinforcement,mivan_workflow,medium,invalid,parallel M01 upload; bounds scaled from M01 transcript alignment
+M05-S06,M05,00:09:33,00:10:01,27,electrical_mep,mivan_workflow,medium,invalid,parallel M01 upload; bounds scaled from M01 transcript alignment
+M05-S07,M05,00:10:32,00:11:20,48,slab_supporting_and_quality_check,mivan_workflow,medium,invalid,parallel M01 upload; bounds scaled from M01 transcript alignment
+M05-S08,M05,00:11:24,00:11:49,24,concrete_pour_and_vibration,mivan_workflow,medium,invalid,parallel M01 upload; bounds scaled from M01 transcript alignment

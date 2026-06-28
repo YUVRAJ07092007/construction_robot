@@ -1,0 +1,25 @@
+﻿--- js3ftGNLsPY ---
+title: 06-Floor Coating Robot
+channel: Brightmasterrobotics_BMR
+duration: 60
+chapters: None
+--- vP2Csqu_5yg ---
+title: 05-Putty Grinding Robot
+channel: Brightmasterrobotics_BMR
+duration: 178
+chapters: None
+--- Z4v3zjiI2lg ---
+title: 03-Indoor coating robot NP320
+channel: Brightmasterrobotics_BMR
+duration: 215
+chapters: None
+--- i8RiAKzosyg ---
+title: About BrightMaster Robotics
+channel: Brightmasterrobotics_BMR
+duration: 123
+chapters: None
+--- CDadY1AMC3U ---
+title: MIVAN Shuttering Procedure I 7 days Slab Cycle I aluminium formwork
+channel: Civil Construct
+duration: 723
+chapters: None
