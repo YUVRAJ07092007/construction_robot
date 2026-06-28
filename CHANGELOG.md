@@ -2,6 +2,19 @@
 
 All notable changes to the construction_robot repository.
 
+## [0.4.2] - 2026-06-28
+
+### Added
+- Final reviewer prompt file and `scripts/complete_final_improvements.py`
+- `data/duplicate_group_summary.csv` for authoritative duplicate-group control
+- Context-aware `concrete_finishing` validation
+- `robot_task_family` on robot source candidates; expanded non-BrightMaster candidates
+
+### Changed
+- Duplicate validation uses group summary (eliminates false suggestions)
+- Manufacturer specs require all claim-control columns; `application_context` claim type
+- `paper_methods_draft.md` Phase 3 wording made internally consistent
+
 ## [0.4.1] - 2026-06-28
 
 ### Added

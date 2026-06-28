@@ -284,7 +284,7 @@ manufacturer_specs.csv:
     evidence_level_required: false
   claim_type:
     data_type: categorical
-    allowed_values: [efficiency, dimension, weight, navigation, endurance, flatness, manpower_reduction, completed_area, trained_operator_count, other]
+    allowed_values: [efficiency, dimension, weight, navigation, endurance, flatness, manpower_reduction, completed_area, trained_operator_count, application_context, other]
     required: false
     evidence_level_required: false
   claim_use:

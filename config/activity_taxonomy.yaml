@@ -99,6 +99,7 @@ context_aware_label_map:
       partially_set: fresh_concrete_finishing
       hardened_concrete: post_cast_surface_preparation
       indoor_hardened_floor: post_cast_coating
+      finished: post_cast_surface_preparation
       unknown: unknown
 
 correction_principle: >

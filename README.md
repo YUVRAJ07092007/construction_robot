@@ -12,6 +12,8 @@ Public videos and manufacturer pages are used as **secondary observational sourc
 
 **Repository status:** `reviewer_ready_with_limitations` — see [`docs/repository_status_matrix.md`](docs/repository_status_matrix.md).
 
+Final fixes: [`docs/final_cursor_improvement_prompts_construction_robot.md`](docs/final_cursor_improvement_prompts_construction_robot.md)
+
 > This repository does not contain direct field-measured productivity data. Public videos are used only as secondary observational sources for extracting visible task-level parameters and workflow characteristics.
 
 ---
@@ -278,7 +280,10 @@ python src/dri_weight_sensitivity.py
 # File formatting check
 python scripts/check_file_formatting.py
 
-# Reviewer-safe schema + reports (run after guide updates)
+# Final reviewer-safe schema + reports
+python scripts/complete_final_improvements.py
+
+# Reviewer-safe schema + reports (prior pass)
 python scripts/complete_reviewer_improvements.py
 
 # Generate data quality report
@@ -331,7 +336,7 @@ See `docs/video_coding_checklist.md` for the full operational guide.
 - [Repository status matrix](docs/repository_status_matrix.md)
 - [Reviewer notes](docs/reviewer_notes.md)
 - [Data directory guide](data/README.md)
-- [Journal reviewer improvement prompts](docs/cursor_repo_improvement_prompts_for_journal_reviewers.md)
+- [Final reviewer improvement prompts](docs/final_cursor_improvement_prompts_construction_robot.md)
 - [Phase 3B sign-off](docs/phase3b_signoff.md)
 - [Readiness review](reports/current_stage_readiness_review.md) — label: **reviewer_ready_with_limitations**
 - [Reviewer readiness report](reports/reviewer_readiness_report.md)

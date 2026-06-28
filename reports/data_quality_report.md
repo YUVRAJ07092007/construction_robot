@@ -64,6 +64,22 @@
 - Videos flagged duplicate/parallel: 3
 - Duplicate groups: 2
 
+**Duplicate group summary (`duplicate_group_summary.csv`):**
+- DUP-MIVAN-SLAB-7DAY: primary=M01, parallel=M05, independent=M01
+- DUP-BMR-NP320-COATING: primary=R07, parallel=R13, independent=R07
+
+## Robot source candidates (robot-agnostic tracking)
+
+- Total candidates: 11
+- BrightMaster candidates: 2
+- Non-BrightMaster candidates: 9
+- floor_grinding: 2
+- fresh_concrete_leveling: 3
+- inspection: 2
+- layout_marking: 1
+- other: 1
+- rebar_tying: 2
+
 ## Robot manufacturer distribution (observations)
 
 - BrightMaster: 10

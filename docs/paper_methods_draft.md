@@ -112,7 +112,7 @@ All cleaned rows have `usable_for_productivity=no` and `duration_validity=invali
 
 ## 2.X Manufacturer specifications (E3)
 
-Product-page and brochure values for selected BrightMaster references (sources T01–T04) were stored in `manufacturer_specs.csv` with `source_type=manufacturer_reported` and evidence level **E3**. These records support specification-range context for the framework but are **not** treated as independently verified field performance.
+Product-page and brochure values for selected BrightMaster references (sources T01–T04) were stored in `manufacturer_specs.csv` with `source_type=manufacturer_reported`, evidence level **E3**, and explicit claim controls (`claim_type`, `claim_use`, `independent_verification_status`, `used_in_model=no`). These records support specification-range context for the framework but are **not** treated as independently verified field performance.
 
 ---
 
@@ -187,9 +187,11 @@ Four families: Mivan slab-cycle (`SF-MIVAN-SLAB-CYCLE`), fresh-concrete robots (
 
 ### Constraint validation
 
-Synthetic rows (future) must pass the same construction-logic rules as seeds (`validate_scenario_constraints.py`), including activity–workflow coherence and fresh- vs post-cast surface alignment.
+Synthetic rows must pass the same construction-logic rules as seeds (`validate_scenario_constraints.py`), including activity–workflow coherence and fresh- vs post-cast surface alignment. Phase 3.1 produced 50 rule-expanded scenarios; Phase 3B produced 50 TVAE/CTGAN pilot scenarios — see [`phase3_1_signoff.md`](phase3_1_signoff.md) and [`phase3b_signoff.md`](phase3b_signoff.md).
 
-**No synthetic records or GAN training were performed at the design stage. Phase 3.1 rule expansion produced 50 synthetic scenarios — see [`phase3_1_signoff.md`](phase3_1_signoff.md).**
+> Phase 3.1 rule-based scenario expansion and Phase 3B tabular GAN/TVAE pilot generation have been implemented as pilot-only scenario-generation demonstrations. Because the seed dataset contains only 14 framework-seed-ready records, these outputs are used only for stress-testing framework logic and scenario diversity. They are not used for statistical inference, field-performance validation, or productivity claims.
+
+> The current dataset remains a secondary observational and framework-seed dataset. Direct field validation on active aluminium formwork-based high-rise construction projects remains future work.
 
 ### Phase 3.1 results
 
@@ -200,7 +202,18 @@ Synthetic rows (future) must pass the same construction-logic rules as seeds (`v
 | Constraint violation rate | 0% |
 | Families | Mivan slab-cycle (16), fresh-concrete robot (16), post-cast robot (8), joint deployment (10) |
 
-All synthetic rows: `is_synthetic=yes`; no duration/productivity fields.
+All synthetic rows: `is_synthetic=yes`, `pilot_only=yes`, `not_for_statistical_inference=yes`; no duration/productivity fields.
+
+### Phase 3B results (tabular GAN/TVAE pilot)
+
+| Metric | Value |
+|--------|-------|
+| GAN pilot scenarios | 50 |
+| Training seeds | 14 |
+| Generation method | `tabular_vae` (CTGAN primary; TVAE fallback) |
+| Constraint errors (export) | 0 |
+
+Outputs are documented as pilot-only aliases (`pilot_gan_synthetic_scenarios.csv`) and are **not** statistically robust generative data.
 
 ---
 

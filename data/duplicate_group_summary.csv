@@ -1,0 +1,3 @@
+duplicate_group_id,primary_video_id,parallel_video_ids,independent_sample_video_id,independent_sample_count,parallel_record_count,duplicate_group_note
+DUP-MIVAN-SLAB-7DAY,M01,M05,M01,1,1,M05 is a parallel/alternate upload aligned to M01 and must not be counted as an independent sample.
+DUP-BMR-NP320-COATING,R07,R13,R07,1,1,R13 is a parallel BrightMaster NP320 coating demo; R07 is the independent sample.

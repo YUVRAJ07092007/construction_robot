@@ -139,8 +139,29 @@ def main() -> None:
     lines.append("## Duplicate / parallel controls")
     lines.append("")
     dup_meta = sum(1 for r in meta if (r.get("is_duplicate_or_parallel") or "").lower() == "yes")
+    dup_summary = read_csv("duplicate_group_summary.csv")
+    candidates = read_csv("robot_source_candidates.csv")
+    bm_candidates = sum(1 for r in candidates if (r.get("manufacturer_name") or "").lower() == "brightmaster")
+    non_bm_candidates = len(candidates) - bm_candidates
     lines.append(f"- Videos flagged duplicate/parallel: {dup_meta}")
     lines.append(f"- Duplicate groups: {len(set(r.get('duplicate_group_id') for r in meta if r.get('duplicate_group_id')))}")
+    if dup_summary:
+        lines.append("")
+        lines.append("**Duplicate group summary (`duplicate_group_summary.csv`):**")
+        for row in dup_summary:
+            lines.append(
+                f"- {row.get('duplicate_group_id')}: primary={row.get('primary_video_id')}, "
+                f"parallel={row.get('parallel_video_ids')}, independent={row.get('independent_sample_video_id')}"
+            )
+    lines.append("")
+    lines.append("## Robot source candidates (robot-agnostic tracking)")
+    lines.append("")
+    lines.append(f"- Total candidates: {len(candidates)}")
+    lines.append(f"- BrightMaster candidates: {bm_candidates}")
+    lines.append(f"- Non-BrightMaster candidates: {non_bm_candidates}")
+    fam = Counter(r.get("robot_task_family", "?") for r in candidates)
+    for k, v in sorted(fam.items()):
+        lines.append(f"- {k}: {v}")
     lines.append("")
     lines.append("## Robot manufacturer distribution (observations)")
     lines.append("")

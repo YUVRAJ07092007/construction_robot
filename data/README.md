@@ -54,6 +54,14 @@ See also: [`docs/repository_status_matrix.md`](../docs/repository_status_matrix.
 
 **`framework_seed_ready`** means suitable for seed-dataset use in framework demonstration — **not** field-validated modelling data.
 
+### `duplicate_group_summary.csv`
+
+| Aspect | Detail |
+|--------|--------|
+| Purpose | Authoritative duplicate/parallel group definitions |
+| Safe use | Filter independent samples; cross-check parallel uploads |
+| Not allowed | Inflating independent sample counts with parallel videos |
+
 ---
 
 ## Manufacturer-reported file

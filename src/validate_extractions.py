@@ -336,7 +336,8 @@ def validate_robot_observations(result: ValidationResult, rows: list[dict[str, s
 def validate_manufacturer_specs(result: ValidationResult, rows: list[dict[str, str]]) -> None:
     allowed_claim_type = {
         "efficiency", "dimension", "weight", "navigation", "endurance", "flatness",
-        "manpower_reduction", "completed_area", "trained_operator_count", "other",
+        "manpower_reduction", "completed_area", "trained_operator_count",
+        "application_context", "other",
     }
     allowed_claim_use = {
         "specification_context", "range_context_only", "discussion_only",
@@ -359,6 +360,19 @@ def validate_manufacturer_specs(result: ValidationResult, rows: list[dict[str, s
         claim_use = (row.get("claim_use") or "").strip()
         verification = (row.get("independent_verification_status") or "").strip()
         used_in_model = (row.get("used_in_model") or "").strip()
+        required = {
+            "claim_type": claim_type,
+            "claim_use": claim_use,
+            "independent_verification_status": verification,
+            "used_in_model": used_in_model,
+            "model_use_note": (row.get("model_use_note") or "").strip(),
+        }
+        for col, val in required.items():
+            if not val:
+                result.add_issue(
+                    file="manufacturer_specs.csv", row_id=sid, severity="critical",
+                    field=col, problem=f"missing required manufacturer control column '{col}'",
+                )
         if claim_type and claim_type not in allowed_claim_type:
             result.add_issue(
                 file="manufacturer_specs.csv", row_id=sid, severity="warning",
@@ -426,17 +440,72 @@ def validate_synthetic_pilot_files(result: ValidationResult) -> None:
                 )
 
 
+def load_duplicate_summary() -> dict[str, dict[str, str]]:
+    path = DATA_DIR / "duplicate_group_summary.csv"
+    if not path.exists():
+        return {}
+    rows = read_csv(path)
+    return {row["duplicate_group_id"]: row for row in rows if row.get("duplicate_group_id")}
+
+
+def resolve_context_aware_activity(raw: str, surface: str, context_map: dict) -> str | None:
+    entry = context_map.get(raw.strip())
+    if not entry:
+        return None
+    surface_key = (surface or "unknown").strip().lower().replace("-", "_")
+    mapping = entry.get("requires_surface_check") or {}
+    return mapping.get(surface_key) or entry.get("default_group", "unknown")
+
+
+def validate_context_aware_activities(result: ValidationResult, rows: list[dict[str, str]], label: str, field: str, surface_field: str = "") -> None:
+    _groups, _legacy, context_map = load_activity_taxonomy()
+    if not context_map:
+        return
+    for row in rows:
+        raw = (row.get(field) or "").strip()
+        if raw not in context_map:
+            continue
+        rid = row.get("observation_id") or row.get("segment_id") or row.get("video_id") or "?"
+        surface = (row.get(surface_field) or row.get("operating_surface") or row.get("surface_condition") or "unknown").strip()
+        resolved = resolve_context_aware_activity(raw, surface, context_map)
+        if resolved in {None, "unknown"} and raw == "concrete_finishing":
+            note = (row.get("label_revision_note") or row.get("parallel_source_note") or "").strip()
+            if not note:
+                result.add_issue(
+                    file=label,
+                    row_id=rid,
+                    severity="warning",
+                    field=field,
+                    problem="concrete_finishing requires surface-condition-based classification",
+                    suggested_fix="add label_revision_note or resolve activity from surface context",
+                )
 def validate_duplicate_controls(result: ValidationResult, rows: list[dict[str, str]], label: str) -> None:
+    summary = load_duplicate_summary()
     groups: dict[str, list[dict[str, str]]] = {}
     for row in rows:
-        if (row.get("is_duplicate_or_parallel") or "").lower() != "yes":
-            continue
-        gid = row.get("duplicate_group_id") or ""
+        gid = (row.get("duplicate_group_id") or "").strip()
         if not gid:
-            result.add("warnings", f"{label} {row.get('observation_id') or row.get('video_id')}: duplicate flagged without group id")
             continue
         groups.setdefault(gid, []).append(row)
+
     for gid, members in groups.items():
+        if gid in summary:
+            expected = (summary[gid].get("independent_sample_video_id") or "").strip()
+            has_primary = any(
+                (m.get("video_id") or "") == expected
+                and (m.get("independent_sample") or "").lower() == "yes"
+                for m in members
+            )
+            if expected and not has_primary:
+                result.add_issue(
+                    file=f"{label} (duplicate summary)",
+                    row_id=gid,
+                    severity="warning",
+                    field="independent_sample",
+                    problem=f"expected independent sample video {expected} not marked in {label}",
+                )
+            continue
+
         independent = [m for m in members if (m.get("independent_sample") or "").lower() == "yes"]
         if len(independent) > 1:
             result.add("warnings", f"{label} group {gid}: multiple independent_sample=yes")
@@ -512,10 +581,13 @@ def main() -> int:
     validate_suitability_scores(result, metadata)
     validate_segments(result, segments)
     validate_activity_labels(result, segments, "segment", "activity_type")
+    validate_context_aware_activities(result, segments, "video_segments.csv", "activity_type")
     validate_cleaned_logic(result, cleaned)
     validate_activity_labels(result, cleaned, "cleaned", "activity_type", critical=True)
+    validate_context_aware_activities(result, cleaned, "cleaned_video_dataset.csv", "activity_type", "operating_surface")
     validate_robot_observations(result, robot)
     validate_activity_labels(result, robot, "robot", "robot_activity_type", critical=True)
+    validate_context_aware_activities(result, robot, "robot_video_observations.csv", "robot_activity_type", "operating_surface")
     validate_mivan_observations(result, mivan)
     validate_activity_labels(result, mivan, "mivan", "slab_activity_type", critical=True)
     validate_manufacturer_specs(result, specs)

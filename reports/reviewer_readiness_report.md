@@ -1,9 +1,9 @@
 # Reviewer Readiness Report
 
-**Generated:** 2026-06-28 (v2 pass)  
+**Generated:** 2026-06-28 (final pass)  
 **Label:** **`reviewer_ready_with_limitations`**
 
-Improvements applied per [`docs/cursor_repo_improvement_prompts_for_journal_reviewers.md`](../docs/cursor_repo_improvement_prompts_for_journal_reviewers.md) (re-upload synced).
+Improvements applied per [`docs/final_cursor_improvement_prompts_construction_robot.md`](../docs/final_cursor_improvement_prompts_construction_robot.md).
 
 ---
 
@@ -11,59 +11,60 @@ Improvements applied per [`docs/cursor_repo_improvement_prompts_for_journal_revi
 
 | # | Question | Status | Notes |
 |---|----------|--------|-------|
-| 1 | Repository status internally consistent? | **Yes** | [`repository_status_matrix.md`](../docs/repository_status_matrix.md) reconciles README, reports, methods |
-| 2 | Data files readable and formatted? | **Yes** | 93 files scanned; 0 formatting issues |
-| 3 | Videos as secondary observational data? | **Yes** | Stated in README, reviewer notes, data/README |
-| 4 | Manufacturer claims separated? | **Yes** | claim_type/claim_use/used_in_model on specs; validation enforced |
-| 5 | Robot-agnostic? | **Partial** | Schema + candidates yes; sample BrightMaster-heavy (documented) |
-| 6 | Duplicate/parallel sources controlled? | **Yes** | Flags + validation on all observation tables |
+| 1 | Repository status internally consistent? | **Yes** | [`repository_status_matrix.md`](../docs/repository_status_matrix.md) |
+| 2 | Data files readable and formatted? | **Yes** | Formatting check clean |
+| 3 | Videos as secondary observational data? | **Yes** | README, reviewer notes, data/README |
+| 4 | Manufacturer claims separated? | **Yes** | All control columns required; validation enforced |
+| 5 | Robot-agnostic? | **Partial** | 11 candidates incl. non-BrightMaster; coded sample BrightMaster-heavy |
+| 6 | Duplicate/parallel sources controlled? | **Yes** | `duplicate_group_summary.csv` + validation |
 | 7 | Durations safely handled? | **Yes** | usable_for_productivity=yes count = 0 |
-| 8 | Activity taxonomy clear? | **Yes** | Fresh vs post-cast; context-aware concrete_finishing |
-| 9 | Synthetic outputs pilot-only? | **Yes** | pilot_only, not_for_statistical_inference on all synthetic rows |
-| 10 | DRI scenario-relative + sensitivity? | **Yes** | 4 schemes tested; 51 weight-sensitive records documented |
-| 11 | Validation report clean? | **Yes** | 0 critical errors |
-| 12 | Suitable for methodology demonstration? | **Yes** | End-to-end pipeline reproducible |
-| 13 | Future work? | See below | Field validation; robot diversity; techno-economic |
+| 8 | Activity taxonomy clear? | **Yes** | Context-aware `concrete_finishing` |
+| 9 | Synthetic outputs pilot-only? | **Yes** | pilot metadata on all synthetic rows |
+| 10 | DRI scenario-relative + sensitivity? | **Yes** | Weight sensitivity report present |
+| 11 | Validation report clean? | **Yes** | 0 critical errors; 0 duplicate false suggestions |
+| 12 | Suitable for methodology demonstration? | **Yes** | Reproducible pipeline |
+| 13 | Future work? | Field validation; more robot coding | Documented |
 
 ---
 
 ## Validation summary
 
 - Critical errors: **0**
-- Tests: **42 passed**
-- Synthetic pilot rows patched: **200** (50 rule + 50 GAN + 100 combined)
+- Tests: **44 passed**
+- Duplicate groups documented: **2** (`duplicate_group_summary.csv`)
 
 ---
 
-## Limitations (for reviewers)
+## Final Sign-Off After Remaining Fixes
 
-1. n=14 seed sample — pilot only  
-2. BrightMaster majority in robot observations  
-3. GAN/TVAE trained on small sample — not for statistical inference  
-4. DRI rankings weight-sensitive (51/73 applicable records shift ≥5 ranks across schemes)  
-5. No independent field validation  
+| # | Item | Status |
+|---|------|--------|
+| 1 | All `modelling_ready` references replaced? | **Yes** (only in changelog / prompt archives) |
+| 2 | Manufacturer-claim control columns added? | **Yes** — all rows populated; validation requires fields |
+| 3 | Concrete-finishing taxonomy context-based? | **Yes** — `context_aware_label_map` + validation |
+| 4 | Duplicate-group validation resolved? | **Yes** — summary file; no false suggestions |
+| 5 | Methods draft internally consistent? | **Yes** — Phase 3.1/3B pilot wording aligned |
+| 6 | Robot-agnostic source tracking strengthened? | **Yes** — `robot_task_family`; 11 candidates |
+| 7 | Validation and data-quality reports regenerated? | **Yes** |
+| 8 | Synthetic outputs clearly pilot-only? | **Yes** |
+| 9 | DRI outputs clearly scenario-relative? | **Yes** |
+| 10 | Suitable as JBE methodology-support repository? | **Yes**, with stated limitations |
+
+**Final label:** `reviewer_ready_with_limitations`
 
 ---
 
-## Future work
+## Safe repository description
 
-- Independent site validation  
-- Additional comparison robot coding (Floor Master, Kajima, etc.)  
-- Expert weight calibration for DRI  
-- Techno-economic assessment module  
+> A reviewer-ready-with-limitations repository supporting a video-informed, robot-agnostic methodological framework for construction robot deployment readiness assessment in aluminium formwork-based high-rise building construction. The repository is suitable for methodology demonstration and transparent supplementary material, but not for claiming verified field productivity or final deployment performance.
 
 ---
 
-## Key new artifacts
+## Key artifacts (final pass)
 
 | File | Purpose |
 |------|---------|
-| `docs/repository_status_matrix.md` | Stage status single source of truth |
-| `docs/reviewer_notes.md` | Academic reviewer guide |
-| `data/README.md` | Per-file CSV guide |
-| `src/dri_weight_sensitivity.py` | DRI weight robustness |
-| `scripts/complete_reviewer_improvements.py` | Idempotent reviewer pipeline |
-| `scripts/apply_reviewer_schema_v2.py` | Duration + pilot filename aliases |
-| `data/pilot_*_synthetic_scenarios.csv` | Reviewer-friendly synthetic aliases |
-| `scripts/check_file_formatting.py` | Formatting QA |
-| `CITATION.cff`, `LICENSE`, `CHANGELOG.md` | Citation and versioning |
+| `docs/final_cursor_improvement_prompts_construction_robot.md` | Final remaining-fix prompt list |
+| `data/duplicate_group_summary.csv` | Authoritative duplicate-group definitions |
+| `data/robot_source_candidates.csv` | Robot-agnostic candidate registry with `robot_task_family` |
+| `scripts/complete_final_improvements.py` | Final idempotent pipeline runner |

@@ -86,6 +86,21 @@ class TestValidationLogic:
         v.validate_duplicate_controls(result, rows, "video")
         assert any("independent_sample" in s for s in result.suggestions)
 
+    def test_duplicate_summary_skips_false_suggestion(self):
+        result = v.ValidationResult()
+        rows = [
+            {"video_id": "M01", "duplicate_group_id": "DUP-MIVAN-SLAB-7DAY", "independent_sample": "yes"},
+            {"video_id": "M05", "duplicate_group_id": "DUP-MIVAN-SLAB-7DAY", "independent_sample": "no", "is_duplicate_or_parallel": "yes"},
+        ]
+        v.validate_duplicate_controls(result, rows, "video")
+        assert not any("DUP-MIVAN-SLAB-7DAY" in s for s in result.suggestions)
+
+    def test_manufacturer_spec_missing_control_columns(self):
+        result = v.ValidationResult()
+        rows = [{"spec_id": "S1", "evidence_level": "E3", "source_type": "manufacturer_reported"}]
+        v.validate_manufacturer_specs(result, rows)
+        assert any("missing required manufacturer control" in e for e in result.errors)
+
     def test_unknown_manufacturer_treated_as_verified(self):
         result = v.ValidationResult()
         rows = [{"observation_id": "R2", "evidence_level": "E2", "source_type": "video_estimated", "manufacturer_verified": "yes", "manufacturer_name": "unknown"}]
