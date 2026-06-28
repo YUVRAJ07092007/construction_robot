@@ -279,6 +279,7 @@ def main() -> None:
         "robot_category",
     ]
     clean_fields = extend_fields(clean_fields, clean_extra)
+    dup_group_independent_assigned: set[str] = set()
     for row in clean_rows:
         act = row.get("activity_type", "")
         if act in ACTIVITY_REVISIONS:
@@ -294,7 +295,16 @@ def main() -> None:
         vid = row["video_id"]
         dup = DUPLICATE_VIDEO.get(vid)
         if dup:
-            row["is_duplicate_or_parallel"], row["duplicate_group_id"], row["independent_sample"], _ = dup
+            row["is_duplicate_or_parallel"], gid, is_independent_video, _ = dup
+            row["duplicate_group_id"] = gid
+            if is_independent_video == "yes":
+                if gid not in dup_group_independent_assigned:
+                    row["independent_sample"] = "yes"
+                    dup_group_independent_assigned.add(gid)
+                else:
+                    row["independent_sample"] = "no"
+            else:
+                row["independent_sample"] = "no"
         else:
             row["is_duplicate_or_parallel"] = "no"
             row["duplicate_group_id"] = ""
