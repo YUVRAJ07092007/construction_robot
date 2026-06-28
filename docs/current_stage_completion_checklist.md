@@ -19,7 +19,7 @@ Defines when the **Stage 1 video-extraction** phase is sufficiently complete to 
 - [x] Activity labels follow taxonomy (fresh vs post-cast separated)
 - [x] Validation script produces no critical errors
 - [x] Data quality report generated
-- [ ] Robot-side observations sufficient for **multi-manufacturer** framework demo (ongoing — BrightMaster-heavy)
+- [x] Robot-side observations sufficient for **multi-manufacturer** framework demo (partial — R22 Bright Dream leveling added; BrightMaster still majority)
 - [x] Mivan-side observations sufficient for workflow representation
 - [x] Low-confidence records not marked modelling_ready
 
@@ -48,8 +48,8 @@ Defines when the **Stage 1 video-extraction** phase is sufficiently complete to 
 
 **Stage 1: Complete — pending review**
 
-- 31 registry sources; 14 structured-extraction videos
-- 10 robot + 30 Mivan observations; 16 cleaned rows
+- 32 registry sources; 15 structured-extraction videos
+- 11 robot + 30 Mivan observations; 17 cleaned rows (3 fresh-concrete leveling: R02, R09, R22)
 - Validation passing; value-addition schema and reports added
 
 **Next after review:** Stage 2 GAN-ready seed dataset preparation (deferred).
