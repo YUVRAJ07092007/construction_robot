@@ -48,8 +48,9 @@ Defines when the **Stage 1 video-extraction** phase is sufficiently complete to 
 
 **Stage 1: Complete — pending review**
 
-- 32 registry sources; 15 structured-extraction videos
+- 32 registry sources; 16 structured-extraction videos
 - 11 robot + 30 Mivan observations; 17 cleaned rows (3 fresh-concrete leveling: R02, R09, R22)
 - Validation passing; value-addition schema and reports added
+- All 4 remaining `robot_source_candidates` marked `deferred_post_stage1` (not blocking Stage 1)
 
 **Next after review:** Stage 2 GAN-ready seed dataset preparation (deferred).

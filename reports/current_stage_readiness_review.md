@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-28  
 **Reviewer:** Automated post-Stage-1 + value-addition review  
-**Extraction status:** Ongoing — Stage 1 coded datasets complete; human review pending
+**Extraction status:** Complete — Stage 1 coded datasets finished; human review pending
 
 ---
 
@@ -46,11 +46,14 @@
 
 ### 10. What is still missing?
 
-- Multi-manufacturer robot video coding (comparison robots)
+- Human review sign-off on coding quality (required before Stage 2)
+- Promotion path to modelling_ready (conservative; not yet applied)
+
+**Optional future expansion (deferred, not blocking Stage 1):**
+
+- Additional comparison robots beyond Bright Dream R22 (Floor Master, Kajima, rebar tying, inspection — see `robot_source_candidates.csv`)
 - Normalization of legacy source_type hyphen/underscore values
 - Additional independent fresh-concrete leveling observations
-- Human review sign-off on coding quality
-- Promotion path to modelling_ready (conservative; not yet applied)
 
 ---
 
@@ -58,7 +61,7 @@
 
 **`framework_ready`**
 
-The repository supports framework development and structured secondary observational analysis. It is **not** seed_dataset_ready or final quantitative validation ready. Extraction remains open for robot-agnostic expansion.
+The repository supports framework development and structured secondary observational analysis. It is **not** seed_dataset_ready or final quantitative validation ready. Stage 1 extraction is complete; optional robot-agnostic expansion is deferred to post-review work.
 
 ---
 

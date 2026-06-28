@@ -52,7 +52,8 @@ def main() -> None:
     lines = [
         "# Data Quality Report",
         "",
-        "**Status:** Video data extraction is **ongoing**. This report describes the current snapshot only.",
+        "**Status:** Stage 1 video data extraction is **complete** (pending human review). "
+        "This report describes the final Stage 1 snapshot.",
         "",
         "> The dataset is a secondary observational dataset derived from publicly available videos "
         "and manufacturer-reported specifications. It is not direct field-measured productivity data.",
@@ -143,11 +144,18 @@ def main() -> None:
     lines.append(f"- Cleaned rows not marked modelling_ready or with productivity blocked: {len(not_modelling)}")
     lines.append(f"- Invalid-duration segments: {sum(1 for r in segments if (r.get('duration_validity') or '').lower() == 'invalid')}")
     lines.append("")
-    lines.append("## Extraction gaps (priority)")
+    lines.append("## Stage 1 completion")
     lines.append("")
-    lines.append("- Expand robot-agnostic comparison sources beyond BrightMaster")
-    lines.append("- Add more independent fresh-concrete leveling observations from verified sources")
-    lines.append("- Continue Mivan playlist screening only where workflow adds non-duplicate value")
+    lines.append("- All priority sources screened (no `pending_screening` in registry)")
+    lines.append("- All structured-extraction videos segmented and coded")
+    lines.append("- Robot source candidates: 4 screened, 4 deferred to post-Stage-1 expansion")
+    lines.append("- Validation passing; awaiting human review sign-off before Stage 2")
+    lines.append("")
+    lines.append("## Optional future expansion (not in Stage 1 scope)")
+    lines.append("")
+    lines.append("- Additional comparison robots (Floor Master, Kajima, rebar tying, inspection)")
+    lines.append("- More independent fresh-concrete leveling observations from verified sources")
+    lines.append("- Mivan playlist entries only where workflow adds non-duplicate value")
     lines.append("- Re-screen low-confidence or excluded sources before any modelling_ready promotion")
     lines.append("")
 

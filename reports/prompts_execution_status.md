@@ -4,7 +4,7 @@
 **Branch:** main  
 **Audit:** Full re-audit against `cursor_prompts_construction_robot_value_addition.md`
 
-Extraction is **ongoing**. Stage 2 (GAN seed conversion) is **not in scope**.
+Stage 1 extraction is **complete** (pending human review). Stage 2 (GAN seed conversion) is **not in scope**.
 
 | # | Prompt | Status | Notes |
 |---|--------|--------|-------|

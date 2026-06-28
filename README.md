@@ -93,14 +93,14 @@ Convert cleaned video-derived data into normalised seed records for synthetic sc
 
 | File | Rows (approx.) | Notes |
 |------|----------------|-------|
-| `video_metadata.csv` | 31 | All R01 pool + R04 + M04 screened |
-| `video_segments.csv` | 45 | M01–M03, M05–M06, R02, R05–R13, R15 |
-| `robot_video_observations.csv` | 10 | BrightMaster robot demos + leveling/layout |
+| `video_metadata.csv` | 32 | All R01 pool + R04 + M04 screened |
+| `video_segments.csv` | 46 | M01–M03, M05–M06, R02, R05–R13, R15, R22 |
+| `robot_video_observations.csv` | 11 | BrightMaster demos + Bright Dream R22 comparison |
 | `mivan_video_observations.csv` | 30 | Slab-cycle workflow coding |
-| `cleaned_video_dataset.csv` | 16 | Key rows for modelling |
+| `cleaned_video_dataset.csv` | 17 | Key rows for modelling |
 | `manufacturer_specs.csv` | 10 | T01–T04 E3 reference values |
 
-**Structured-extraction videos:** M01–M03, M05–M06 · R02, R05–R07, R09–R13, R15
+**Structured-extraction videos:** M01–M03, M05–M06 · R02, R05–R07, R09–R13, R15, R22
 
 ---
 
