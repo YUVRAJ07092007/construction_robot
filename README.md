@@ -10,7 +10,9 @@ Public videos and manufacturer pages are used as **secondary observational sourc
 
 **Target paper context:** *Video-Informed and GAN-Augmented Framework for Assessing Construction Robot Deployment Readiness in Aluminium Formwork-Based High-Rise Building Construction* (Journal of Building Engineering).
 
-> The dataset is a secondary observational dataset derived from publicly available videos and manufacturer-reported specifications. It is not direct field-measured productivity data.
+**Repository status:** `reviewer_ready_with_limitations` — see [`docs/repository_status_matrix.md`](docs/repository_status_matrix.md).
+
+> This repository does not contain direct field-measured productivity data. Public videos are used only as secondary observational sources for extracting visible task-level parameters and workflow characteristics.
 
 ---
 
@@ -25,7 +27,8 @@ Public videos and manufacturer pages are used as **secondary observational sourc
 | **Validation** | Python checks + reports for schema and construction logic |
 | **Data dictionary** | `config/data_dictionary.yaml`, `config/activity_taxonomy.yaml` |
 | **Seed dataset** | GAN-ready seeds + 14×17 feature matrix |
-| **Stage 3 design** | Generative augmentation architecture (no synthetic output yet) |
+| **Synthetic pilot** | Rule + GAN/TVAE scenarios (pilot-only) |
+| **DRI framework** | Scenario-relative deployment readiness scoring |
 
 ---
 
@@ -110,7 +113,7 @@ Sign-off: [`docs/stage1_signoff.md`](docs/stage1_signoff.md)
 1. **Promote** — Apply independent-sample and confidence rules to cleaned rows  
 2. **Normalize** — Map activities to taxonomy groups  
 3. **Encode** — Add integer `*_enc` columns per `seed_encoding_schema.yaml`  
-4. **Export** — `gan_seed_dataset.csv` + update `modelling_ready` flags  
+4. **Export** — `gan_seed_dataset.csv` + update `framework_seed_ready` flags  
 5. **Validate** — Seed schema checks + Stage 1 re-validation  
 
 **Not included:** GAN model training or synthetic record generation.
@@ -164,15 +167,53 @@ Docs: [`phase3b_signoff.md`](docs/phase3b_signoff.md) · [`reports/tabular_gan_p
 | `video_segments.csv` | 46 | M01–M03, M05–M06, R02, R05–R13, R15, R22 |
 | `robot_video_observations.csv` | 11 | BrightMaster demos + Bright Dream R22 comparison |
 | `mivan_video_observations.csv` | 30 | Slab-cycle workflow coding |
-| `cleaned_video_dataset.csv` | 17 | 14 promoted to `modelling_ready` |
+| `cleaned_video_dataset.csv` | 17 | 14 promoted to `framework_seed_ready` |
 | `gan_seed_dataset.csv` | 14 | Independent-sample seeds |
 | `synthetic_scenario_dataset.csv` | 50 | Rule-expanded Phase 3.1 |
+| `pilot_rule_based_synthetic_scenarios.csv` | 50 | Reviewer alias of rule synthetics |
 | `synthetic_scenario_dataset_gan.csv` | 50 | Tabular GAN/VAE Phase 3B |
+| `pilot_gan_synthetic_scenarios.csv` | 50 | Reviewer alias of GAN synthetics |
 | `synthetic_scenario_dataset_all.csv` | 100 | Rule + GAN combined |
+| `pilot_combined_synthetic_scenarios.csv` | 100 | Reviewer alias of combined |
 | `dri_scored_scenarios.csv` | 64 (114 with `--all-synthetic`) | DRI framework scores |
 | `manufacturer_specs.csv` | 10 | T01–T04 E3 reference values |
 
 **Structured-extraction videos:** M01–M03, M05–M06 · R02, R05–R07, R09–R13, R15, R22
+
+---
+
+## Data-use system
+
+| data_use | Meaning |
+|----------|---------|
+| exclude | Not used in framework |
+| qualitative_only | Descriptive context only |
+| structured_coding | Coded but not seed-promoted |
+| framework_seed_ready | Suitable for seed-dataset use (not field-validated) |
+
+---
+
+## Manufacturer-claim warning
+
+All rows in `manufacturer_specs.csv` are **E3 manufacturer-reported**. Claims include `claim_type`, `claim_use`, and `used_in_model=no`. Productivity and manpower-reduction claims are **not independently verified**.
+
+---
+
+## Duplicate / parallel-source control
+
+Videos and observations use `is_duplicate_or_parallel`, `duplicate_group_id`, and `independent_sample`. Only one record per duplicate group should count as an independent sample.
+
+---
+
+## Synthetic data pilot warning
+
+Rule-expanded and GAN/TVAE scenarios are marked `pilot_only=yes` and `not_for_statistical_inference=yes`. They stress-test framework logic — not observed site data.
+
+---
+
+## DRI scenario-relative warning
+
+Deployment Readiness Index scores in `dri_scored_scenarios.csv` enable **scenario-relative ranking** within the coded corpus. They are **not field-validated** deployment performance. Run weight sensitivity: `python src/dri_weight_sensitivity.py`.
 
 ---
 
@@ -228,6 +269,18 @@ python scripts/complete_stage3.py
 # Phase 3C: DRI framework scoring
 python scripts/complete_stage3c.py
 
+# Phase 3B: tabular GAN pilot
+python scripts/complete_stage3b.py
+
+# DRI weight sensitivity
+python src/dri_weight_sensitivity.py
+
+# File formatting check
+python scripts/check_file_formatting.py
+
+# Reviewer-safe schema + reports (run after guide updates)
+python scripts/complete_reviewer_improvements.py
+
 # Generate data quality report
 python src/generate_data_quality_report.py
 
@@ -275,11 +328,19 @@ See `docs/video_coding_checklist.md` for the full operational guide.
 - [Phase 3C sign-off](docs/phase3c_signoff.md)
 - [Paper Methods draft](docs/paper_methods_draft.md)
 - [Current stage completion checklist](docs/current_stage_completion_checklist.md)
-- [Readiness review](reports/current_stage_readiness_review.md) — label: **seed_dataset_ready** (Stage 3 design complete)
+- [Repository status matrix](docs/repository_status_matrix.md)
+- [Reviewer notes](docs/reviewer_notes.md)
+- [Data directory guide](data/README.md)
+- [Journal reviewer improvement prompts](docs/cursor_repo_improvement_prompts_for_journal_reviewers.md)
+- [Phase 3B sign-off](docs/phase3b_signoff.md)
+- [Readiness review](reports/current_stage_readiness_review.md) — label: **reviewer_ready_with_limitations**
+- [Reviewer readiness report](reports/reviewer_readiness_report.md)
 - [Prompts execution status](reports/prompts_execution_status.md)
 
 ---
 
 ## License
 
-Research and educational use. Video sources remain subject to platform terms. Manufacturer specifications are **manufacturer-reported (E3)** and not independently verified field data.
+MIT License — see [`LICENSE`](LICENSE). Cite via [`CITATION.cff`](CITATION.cff).
+
+Video sources remain subject to platform terms. Manufacturer specifications are **manufacturer-reported (E3)** and not independently verified field data.

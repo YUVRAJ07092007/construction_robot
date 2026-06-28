@@ -20,6 +20,7 @@ from src.expand_scenarios import (  # noqa: E402
     OUTPUT_HEADER,
     allowed_access_for_congestion,
     fingerprint,
+    pilot_metadata,
     read_csv,
     validate_feature_row,
     write_csv,
@@ -229,6 +230,10 @@ def run_pilot() -> dict:
                 "constraint_violation_count": str(violations),
                 "synthetic_provenance": pilot_config["output"]["synthetic_provenance"],
                 "generation_date": generation_date,
+                **pilot_metadata(
+                    generation_method=method_tag,
+                    note=f"TVAE/CTGAN pilot from n=14 seeds; {model_used} model",
+                ),
                 **features,
             }
         )

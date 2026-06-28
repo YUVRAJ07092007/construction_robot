@@ -92,13 +92,13 @@ video_metadata.csv:
   data_use:
     description: Intended research use of the record
     data_type: categorical
-    allowed_values: [exclude, qualitative_only, structured_coding, modelling_ready]
+    allowed_values: [exclude, qualitative_only, structured_coding, framework_seed_ready]
     required: false
     evidence_level_required: false
   manual_data_use_override:
     description: Manual override of computed data_use
     data_type: categorical
-    allowed_values: [exclude, qualitative_only, structured_coding, modelling_ready, ""]
+    allowed_values: [exclude, qualitative_only, structured_coding, framework_seed_ready, ""]
     required: false
     evidence_level_required: false
   is_duplicate_or_parallel:
@@ -145,6 +145,12 @@ video_segments.csv:
     description: Legacy alias; same as visible_segment_duration_sec
     data_type: float
     required: true
+    evidence_level_required: false
+  visible_duration_validity:
+    description: Validity of visible segment duration for framework use (not productivity)
+    data_type: categorical
+    allowed_values: [invalid, valid_for_visible_segment_only]
+    required: false
     evidence_level_required: false
   activity_type:
     description: Segment activity label (taxonomy-aligned)
@@ -210,7 +216,7 @@ robot_video_observations.csv:
   data_use:
     description: Research use classification
     data_type: categorical
-    allowed_values: [exclude, qualitative_only, structured_coding, modelling_ready]
+    allowed_values: [exclude, qualitative_only, structured_coding, framework_seed_ready]
     required: false
     evidence_level_required: false
   label_revision_note:
@@ -276,6 +282,31 @@ manufacturer_specs.csv:
     allowed_values: [yes, no, unknown]
     required: false
     evidence_level_required: false
+  claim_type:
+    data_type: categorical
+    allowed_values: [efficiency, dimension, weight, navigation, endurance, flatness, manpower_reduction, completed_area, trained_operator_count, other]
+    required: false
+    evidence_level_required: false
+  claim_use:
+    data_type: categorical
+    allowed_values: [specification_context, range_context_only, discussion_only, comparison_only, exclude]
+    required: false
+    evidence_level_required: false
+  independent_verification_status:
+    data_type: categorical
+    allowed_values: [verified, not_verified, unknown]
+    required: false
+    evidence_level_required: false
+  used_in_model:
+    data_type: categorical
+    allowed_values: [yes, no]
+    required: false
+    evidence_level_required: false
+  model_use_note:
+    description: Human-readable note on safe use of the claim
+    data_type: string
+    required: false
+    evidence_level_required: false
 
 cleaned_video_dataset.csv:
   observation_id:
@@ -302,7 +333,7 @@ cleaned_video_dataset.csv:
     evidence_level_required: true
   data_use:
     data_type: categorical
-    allowed_values: [exclude, qualitative_only, structured_coding, modelling_ready]
+    allowed_values: [exclude, qualitative_only, structured_coding, framework_seed_ready]
     required: false
     evidence_level_required: false
   usable_for_productivity:

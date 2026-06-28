@@ -170,7 +170,7 @@ def convert_row(
         "duration_excluded": "yes",
         "usable_for_productivity": "no",
         "seed_provenance": "video_observed_secondary",
-        "data_use": "modelling_ready",
+        "data_use": "framework_seed_ready",
         "seed_conversion_date": conversion_date,
         "exclusion_reason": "",
     }
@@ -187,7 +187,7 @@ def update_cleaned_data_use(cleaned_rows: list[dict[str, str]], promoted_ids: se
     for row in cleaned_rows:
         oid = row.get("observation_id", "")
         if oid in promoted_ids:
-            row["data_use"] = "modelling_ready"
+            row["data_use"] = "framework_seed_ready"
 
 
 def write_conversion_report(
@@ -225,7 +225,7 @@ def write_conversion_report(
         "",
         "- `independent_sample=yes`",
         "- Not flagged duplicate/parallel",
-        "- `data_use` structured_coding (promoted to modelling_ready)",
+        "- `data_use` structured_coding (promoted to framework_seed_ready)",
         "- `coding_confidence` medium or high",
         "- Evidence E1 or E2 only",
         "- `usable_for_productivity=no` enforced",
@@ -254,7 +254,7 @@ def write_conversion_report(
             "## Output files",
             "",
             "- `data/gan_seed_dataset.csv` — GAN-ready seed feature table",
-            "- `data/cleaned_video_dataset.csv` — promoted rows marked `modelling_ready`",
+            "- `data/cleaned_video_dataset.csv` — promoted rows marked `framework_seed_ready`",
             "",
             "## Research-safe note",
             "",
@@ -269,7 +269,7 @@ def write_conversion_report(
 def convert(*, write_cleaned: bool = True) -> dict:
     schema = load_schema()
     rules = schema["seed_promotion_rules"]
-    groups, legacy = load_activity_taxonomy()
+    groups, legacy, _context = load_activity_taxonomy()
     cleaned = read_csv(CLEANED_PATH)
     robot = read_csv(ROBOT_PATH)
     robot_lookup = build_robot_lookup(robot)

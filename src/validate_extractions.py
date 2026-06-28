@@ -38,7 +38,7 @@ VALID_SOURCE_TYPES = {
     "literature_reported",
     "project_document_derived",
 }
-VALID_DATA_USE = {"exclude", "qualitative_only", "structured_coding", "modelling_ready"}
+VALID_DATA_USE = {"exclude", "qualitative_only", "structured_coding", "framework_seed_ready"}
 FRESH_ACTIVITIES = {"fresh_concrete_leveling", "fresh_concrete_finishing", "concrete_leveling"}
 POST_CAST_ACTIVITIES = {"post_cast_floor_grinding", "post_cast_coating", "post_cast_surface_preparation", "floor_grinding"}
 WET_SURFACES = {"wet_concrete", "pre_pour_slab", "pre-pour", "wet", "partially_set"}
@@ -65,17 +65,55 @@ REQUIRED_CLEANED_COLS = [
 
 
 @dataclass
+class IssueRecord:
+    file: str
+    row_identifier: str
+    severity: str
+    field: str
+    problem: str
+    suggested_fix: str
+    status: str = "open"
+
+
+@dataclass
 class ValidationResult:
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     suggestions: list[str] = field(default_factory=list)
+    issues: list[IssueRecord] = field(default_factory=list)
+    issue_counter: int = 0
 
     def add(self, level: str, message: str) -> None:
         getattr(self, level).append(message)
 
+    def add_issue(
+        self,
+        *,
+        file: str,
+        row_id: str,
+        severity: str,
+        field: str,
+        problem: str,
+        suggested_fix: str = "",
+    ) -> None:
+        self.issue_counter += 1
+        msg = f"{file} {row_id}: {problem}"
+        level = {"critical": "errors", "warning": "warnings", "suggestion": "suggestions"}[severity]
+        self.add(level, msg)
+        self.issues.append(
+            IssueRecord(
+                file=file,
+                row_identifier=row_id,
+                severity=severity,
+                field=field,
+                problem=problem,
+                suggested_fix=suggested_fix,
+            )
+        )
+
 
 @lru_cache(maxsize=1)
-def load_activity_taxonomy() -> tuple[frozenset[str], dict[str, str]]:
+def load_activity_taxonomy() -> tuple[frozenset[str], dict[str, str], dict]:
     path = ROOT / "config" / "activity_taxonomy.yaml"
     if yaml is None:
         raise RuntimeError("PyYAML required for activity taxonomy validation")
@@ -83,7 +121,8 @@ def load_activity_taxonomy() -> tuple[frozenset[str], dict[str, str]]:
         data = yaml.safe_load(handle)
     groups = frozenset(data["activity_groups"].keys())
     legacy = {str(k): str(v) for k, v in (data.get("legacy_label_map") or {}).items()}
-    return groups, legacy
+    context = data.get("context_aware_label_map") or {}
+    return groups, legacy, context
 
 
 def resolve_activity_label(label: str, groups: frozenset[str], legacy: dict[str, str]) -> str | None:
@@ -153,11 +192,19 @@ def validate_segments(result: ValidationResult, rows: list[dict[str, str]]) -> N
                 f"segment {sid}: duration {duration}s below minimum {MIN_SEGMENT_DURATION_SEC}s",
             )
         productivity = (row.get("usable_for_productivity") or "").lower()
-        validity = (row.get("duration_validity") or "").lower()
+        vis_validity = (row.get("visible_duration_validity") or row.get("duration_validity") or "").lower()
         if productivity == "yes":
-            result.add("errors", f"segment {sid}: public video must not be usable_for_productivity=yes")
-        if validity == "valid" and productivity == "yes":
-            result.add("errors", f"segment {sid}: invalid productivity pairing")
+            result.add_issue(
+                file="video_segments.csv", row_id=sid, severity="critical",
+                field="usable_for_productivity",
+                problem="public video must not be usable_for_productivity=yes",
+            )
+        if vis_validity == "valid_for_visible_segment_only" and productivity == "yes":
+            result.add_issue(
+                file="video_segments.csv", row_id=sid, severity="critical",
+                field="visible_duration_validity",
+                problem="invalid productivity pairing",
+            )
 
 
 def validate_cleaned_logic(result: ValidationResult, rows: list[dict[str, str]]) -> None:
@@ -216,8 +263,8 @@ def validate_cleaned_logic(result: ValidationResult, rows: list[dict[str, str]])
             result.add("warnings", f"{oid}: low confidence with valid duration")
         if visibility == "low" and confidence == "high":
             result.add("warnings", f"{oid}: low visibility conflicts with high confidence")
-        if data_use == "modelling_ready" and confidence == "low":
-            result.add("errors", f"{oid}: low-confidence record marked modelling_ready")
+        if data_use == "framework_seed_ready" and confidence == "low":
+            result.add("errors", f"{oid}: low-confidence record marked framework_seed_ready")
         if productivity == "yes":
             result.add("errors", f"{oid}: cleaned row must not be usable_for_productivity=yes")
         if "manufacturer" in source_type:
@@ -232,7 +279,7 @@ def validate_activity_labels(
     *,
     critical: bool = False,
 ) -> None:
-    groups, legacy = load_activity_taxonomy()
+    groups, legacy, _context = load_activity_taxonomy()
     level = "errors" if critical else "warnings"
     for row in rows:
         raw = (row.get(field) or "").strip()
@@ -266,8 +313,8 @@ def validate_mivan_observations(result: ValidationResult, rows: list[dict[str, s
             result.add("warnings", f"{oid}: high safety exposure conflicts with good safety_condition without note")
         data_use = (row.get("data_use") or "").lower()
         confidence = (row.get("coding_confidence") or "").lower()
-        if data_use == "modelling_ready" and confidence == "low":
-            result.add("errors", f"{oid}: low-confidence mivan record marked modelling_ready")
+        if data_use == "framework_seed_ready" and confidence == "low":
+            result.add("errors", f"{oid}: low-confidence mivan record marked framework_seed_ready")
 
 
 def validate_robot_observations(result: ValidationResult, rows: list[dict[str, str]]) -> None:
@@ -287,14 +334,96 @@ def validate_robot_observations(result: ValidationResult, rows: list[dict[str, s
 
 
 def validate_manufacturer_specs(result: ValidationResult, rows: list[dict[str, str]]) -> None:
+    allowed_claim_type = {
+        "efficiency", "dimension", "weight", "navigation", "endurance", "flatness",
+        "manpower_reduction", "completed_area", "trained_operator_count", "other",
+    }
+    allowed_claim_use = {
+        "specification_context", "range_context_only", "discussion_only",
+        "comparison_only", "exclude",
+    }
+    allowed_verification = {"verified", "not_verified", "unknown"}
+    allowed_model = {"yes", "no"}
     for row in rows:
         sid = row.get("spec_id", "?")
         evidence = (row.get("evidence_level") or "").upper()
         source = (row.get("source_type") or "").replace("-", "_")
         if evidence != "E3":
-            result.add("errors", f"{sid}: manufacturer spec must be E3")
+            result.add_issue(
+                file="manufacturer_specs.csv", row_id=sid, severity="critical",
+                field="evidence_level", problem=f"manufacturer spec must be E3, got {evidence}",
+            )
         if source and source not in {"manufacturer_reported", ""}:
             result.add("warnings", f"{sid}: expected source_type manufacturer_reported")
+        claim_type = (row.get("claim_type") or "").strip()
+        claim_use = (row.get("claim_use") or "").strip()
+        verification = (row.get("independent_verification_status") or "").strip()
+        used_in_model = (row.get("used_in_model") or "").strip()
+        if claim_type and claim_type not in allowed_claim_type:
+            result.add_issue(
+                file="manufacturer_specs.csv", row_id=sid, severity="warning",
+                field="claim_type", problem=f"invalid claim_type '{claim_type}'",
+            )
+        if claim_use and claim_use not in allowed_claim_use:
+            result.add_issue(
+                file="manufacturer_specs.csv", row_id=sid, severity="warning",
+                field="claim_use", problem=f"invalid claim_use '{claim_use}'",
+            )
+        if verification and verification not in allowed_verification:
+            result.add_issue(
+                file="manufacturer_specs.csv", row_id=sid, severity="warning",
+                field="independent_verification_status", problem=f"invalid value '{verification}'",
+            )
+        if used_in_model and used_in_model not in allowed_model:
+            result.add_issue(
+                file="manufacturer_specs.csv", row_id=sid, severity="warning",
+                field="used_in_model", problem=f"invalid used_in_model '{used_in_model}'",
+            )
+        if claim_type in {"manpower_reduction", "efficiency", "completed_area", "flatness"}:
+            if verification != "not_verified":
+                result.add_issue(
+                    file="manufacturer_specs.csv", row_id=sid, severity="warning",
+                    field="independent_verification_status",
+                    problem="promotional/productivity claims should be not_verified",
+                    suggested_fix="set independent_verification_status=not_verified",
+                )
+        if used_in_model == "yes":
+            result.add_issue(
+                file="manufacturer_specs.csv", row_id=sid, severity="critical",
+                field="used_in_model",
+                problem="manufacturer claims must not be used as model inputs",
+                suggested_fix="set used_in_model=no",
+            )
+
+
+def validate_synthetic_pilot_files(result: ValidationResult) -> None:
+    for name in (
+        "synthetic_scenario_dataset.csv",
+        "synthetic_scenario_dataset_gan.csv",
+        "synthetic_scenario_dataset_all.csv",
+    ):
+        path = DATA_DIR / name
+        if not path.exists():
+            continue
+        rows = read_csv(path)
+        for row in rows:
+            sid = row.get("scenario_id", "?")
+            if row.get("is_synthetic") != "yes":
+                result.add_issue(
+                    file=name, row_id=sid, severity="critical", field="is_synthetic",
+                    problem="synthetic file row must have is_synthetic=yes",
+                )
+            if row.get("pilot_only") and row.get("pilot_only") != "yes":
+                result.add_issue(
+                    file=name, row_id=sid, severity="warning", field="pilot_only",
+                    problem="synthetic row should be pilot_only=yes",
+                )
+            if row.get("not_for_statistical_inference") == "no":
+                result.add_issue(
+                    file=name, row_id=sid, severity="critical",
+                    field="not_for_statistical_inference",
+                    problem="synthetic row must not be marked for statistical inference",
+                )
 
 
 def validate_duplicate_controls(result: ValidationResult, rows: list[dict[str, str]], label: str) -> None:
@@ -319,21 +448,37 @@ def write_reports(result: ValidationResult) -> None:
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     issues_path = REPORTS_DIR / "validation_issues.csv"
     with issues_path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["severity", "message"])
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "issue_id", "file", "row_identifier", "severity",
+                "field", "problem", "suggested_fix", "status",
+            ],
+        )
         writer.writeheader()
-        for level in ("errors", "warnings", "suggestions"):
-            for msg in getattr(result, level):
-                writer.writerow({"severity": level[:-1], "message": msg})
+        for idx, issue in enumerate(result.issues, start=1):
+            writer.writerow({
+                "issue_id": f"VI-{idx:04d}",
+                "file": issue.file,
+                "row_identifier": issue.row_identifier,
+                "severity": issue.severity,
+                "field": issue.field,
+                "problem": issue.problem,
+                "suggested_fix": issue.suggested_fix,
+                "status": issue.status,
+            })
 
     report_path = REPORTS_DIR / "validation_report.md"
     lines = [
         "# Validation Report",
         "",
-        "Generated by `src/validate_extractions.py`. Stage 1 approved; Stage 2 seed conversion complete.",
+        "Generated by `src/validate_extractions.py`. See `docs/repository_status_matrix.md` for stage status.",
         "",
         f"- **Critical errors:** {len(result.errors)}",
         f"- **Warnings:** {len(result.warnings)}",
         f"- **Suggestions:** {len(result.suggestions)}",
+        "",
+        f"Structured issues: `{issues_path.name}`",
         "",
     ]
     for title, items in (
@@ -374,6 +519,7 @@ def main() -> int:
     validate_mivan_observations(result, mivan)
     validate_activity_labels(result, mivan, "mivan", "slab_activity_type", critical=True)
     validate_manufacturer_specs(result, specs)
+    validate_synthetic_pilot_files(result)
     validate_duplicate_controls(result, metadata, "video")
     validate_duplicate_controls(result, segments, "segment")
     validate_duplicate_controls(result, robot, "robot")

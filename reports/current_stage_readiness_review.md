@@ -1,33 +1,38 @@
 # Current Stage Readiness Review
 
-**Date:** 2026-06-28 (post Stage 2)  
-**Extraction status:** Stage 1 approved; Stage 2 seed conversion complete  
-**Readiness label:** **`seed_dataset_ready`**
+**Date:** 2026-06-28 (post reviewer-improvement pass)  
+**Extraction status:** Pilot complete; framework demonstration complete  
+**Readiness label:** **`reviewer_ready_with_limitations`**
+
+See [`docs/repository_status_matrix.md`](../docs/repository_status_matrix.md) for authoritative stage status.
 
 ---
 
-## Review questions (updated)
+## Review questions
 
-### 9. Is it ready for GAN-ready seed dataset preparation?
-
-**Yes — complete.** 14 seed records in `gan_seed_dataset.csv`. See [`docs/stage2_signoff.md`](../docs/stage2_signoff.md).
-
-### 10. What is still missing?
-
-- Stage 3 generative augmentation (GAN training / synthetic records) — not started
-- Field validation before quantitative deployment-readiness claims
-- Optional robot source expansion
-
----
-
-## Readiness label
-
-**`seed_dataset_ready`**
-
-The repository provides a validated GAN-ready seed feature table from approved secondary observations. It is **not** a synthetic dataset and **not** final quantitative validation ready.
+| # | Question | Answer |
+|---|----------|--------|
+| 1 | Is the dataset logical? | Yes — taxonomy, constraints, and provenance are documented |
+| 2 | Is extraction reproducible? | Yes — validation scripts and stage runners |
+| 3 | Variables suitable for framework development? | Yes — E1/E2 video + E3 specs separated |
+| 4 | Manufacturer claims separated? | Yes — claim controls on specs CSV |
+| 5 | Durations safely handled? | Yes — zero productivity-usable durations |
+| 6 | Duplicate sources controlled? | Yes — duplicate groups flagged |
+| 7 | Robot-agnostic? | Partial — schema yes; sample BrightMaster-heavy |
+| 8 | Methodology demonstration suitable? | Yes |
+| 9 | GAN-ready seeds prepared? | Yes — 14 seeds |
+| 10 | What's missing? | Field validation; more non-BrightMaster coding |
 
 ---
 
-## Research-safe statement
+## Safe claim
 
-> GAN-ready seed records were derived from approved secondary video observations. Seed conversion does not generate synthetic data or claim verified field productivity.
+> The repository presents a video-informed and robot-agnostic methodological framework for converting publicly available construction robotics and aluminium formwork construction videos into structured secondary observational data. The resulting dataset supports framework development, pilot scenario generation, and scenario-relative readiness assessment. It does not constitute direct field-measured productivity evidence or field validation of construction robot performance.
+
+---
+
+## Not allowed claims
+
+- Real-site validation or productivity improvement
+- Statistically robust GAN from n=14 seeds
+- Field-validated DRI scores

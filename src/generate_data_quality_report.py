@@ -51,8 +51,16 @@ def main() -> None:
     activity_mivan = count_values(mivan, "slab_activity_type")
     activity_clean = count_values(cleaned, "activity_type")
 
-    modelling_ready = [r for r in cleaned if r.get("data_use") == "modelling_ready"]
-    not_promoted = [r for r in cleaned if r.get("data_use") != "modelling_ready"]
+    bm_robot = sum(1 for r in robot if (r.get("manufacturer_name") or "").lower() == "brightmaster")
+    non_bm_robot = len(robot) - bm_robot
+    data_use_cleaned = count_values(cleaned, "data_use")
+    review_rows = [
+        r for r in cleaned
+        if (r.get("coding_confidence") or "").lower() == "low"
+        or (r.get("data_use") or "") == "qualitative_only"
+    ]
+    framework_seed_ready = [r for r in cleaned if r.get("data_use") == "framework_seed_ready"]
+    not_promoted = [r for r in cleaned if r.get("data_use") != "framework_seed_ready"]
 
     stage2_note = (
         "Stage 2 GAN seed conversion **complete** (2026-06-28)."
@@ -63,7 +71,8 @@ def main() -> None:
     lines = [
         "# Data Quality Report",
         "",
-        "**Status:** Stage 1 approved (2026-06-27). " + stage2_note,
+        "**Status:** Extraction **ongoing**; pilot/framework demonstration **reviewer_ready_with_limitations**. "
+        "See `docs/repository_status_matrix.md`. " + stage2_note,
         "",
         "> The dataset is a secondary observational dataset derived from publicly available videos "
         "and manufacturer-reported specifications. It is not direct field-measured productivity data.",
@@ -97,7 +106,7 @@ def main() -> None:
         f"- Synthetic scenario records (rule): {len(synthetic)}",
         f"- Synthetic scenario records (GAN pilot): {len(synthetic_gan)}",
         f"- Synthetic scenario records (combined): {len(synthetic_all)}",
-        f"- Cleaned rows promoted to modelling_ready: {len(modelling_ready)}",
+        f"- Cleaned rows promoted to framework_seed_ready: {len(framework_seed_ready)}",
         "",
         "## Evidence-level distribution (observations)",
         "",
@@ -133,10 +142,13 @@ def main() -> None:
     lines.append(f"- Videos flagged duplicate/parallel: {dup_meta}")
     lines.append(f"- Duplicate groups: {len(set(r.get('duplicate_group_id') for r in meta if r.get('duplicate_group_id')))}")
     lines.append("")
-    lines.append("## Robot manufacturer distribution")
+    lines.append("## Robot manufacturer distribution (observations)")
+    lines.append("")
+    lines.append(f"- BrightMaster: {bm_robot}")
+    lines.append(f"- Non-BrightMaster: {non_bm_robot}")
     lines.append("")
     for k, v in sorted(robot_mfr.items()):
-        lines.append(f"- {k}: {v}")
+        lines.append(f"- {k} (registry): {v}")
     lines.append("")
     lines.append("## Activity taxonomy distribution")
     lines.append("")
@@ -148,7 +160,21 @@ def main() -> None:
     for k, v in sorted(activity_mivan.items()):
         lines.append(f"- {k}: {v}")
     lines.append("")
-    lines.append("## Missing-value summary (key fields)")
+    lines.append("## Data-use distribution (cleaned)")
+    lines.append("")
+    for k, v in sorted(data_use_cleaned.items()):
+        lines.append(f"- {k}: {v}")
+    lines.append("")
+    lines.append("## Records requiring review")
+    lines.append("")
+    lines.append(f"- Low-confidence or qualitative-only cleaned rows: {len(review_rows)}")
+    lines.append("")
+    lines.append("## Extraction gaps")
+    lines.append("")
+    lines.append("- More non-BrightMaster robot video coding needed for balanced demonstration")
+    lines.append("- Field validation not yet performed")
+    lines.append("- Synthetic GAN pilot limited to n=14 training seeds")
+    lines.append("")
     lines.append("")
     for name, rows, fields in [
         ("robot", robot, ["evidence_level", "source_type", "data_use"]),
@@ -160,7 +186,7 @@ def main() -> None:
     lines.append("")
     lines.append("## Modelling readiness")
     lines.append("")
-    lines.append(f"- modelling_ready cleaned rows: {len(modelling_ready)}")
+    lines.append(f"- framework_seed_ready cleaned rows: {len(framework_seed_ready)}")
     lines.append(f"- Not promoted (structured_coding / qualitative_only): {len(not_promoted)}")
     lines.append(f"- Seed records (independent sample only): {len(seeds)}")
     lines.append(f"- Invalid-duration segments: {sum(1 for r in segments if (r.get('duration_validity') or '').lower() == 'invalid')}")

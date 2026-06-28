@@ -26,7 +26,7 @@ Convert validated video-derived observations into a **normalized seed feature ta
 | File | Purpose |
 |------|---------|
 | `data/gan_seed_dataset.csv` | Normalized seed records with human-readable + `*_enc` columns |
-| `data/cleaned_video_dataset.csv` | Promoted rows updated to `data_use=modelling_ready` |
+| `data/cleaned_video_dataset.csv` | Promoted rows updated to `data_use=framework_seed_ready` |
 | `reports/seed_conversion_report.md` | Conversion log and exclusions |
 | `reports/seed_validation_report.md` | Seed schema validation |
 
@@ -73,7 +73,7 @@ Each record receives:
 - `seed_provenance=video_observed_secondary`
 - `duration_excluded=yes` — segment timing is **not** a GAN target
 - `usable_for_productivity=no`
-- `data_use=modelling_ready`
+- `data_use=framework_seed_ready`
 - `seed_conversion_date`
 
 ---

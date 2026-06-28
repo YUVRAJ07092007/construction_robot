@@ -43,7 +43,7 @@ Three high-value rows in `data/cleaned_video_dataset.csv` were video-verified:
 | `video_segments.csv` | 46 | All `duration_validity=invalid` |
 | `robot_video_observations.csv` | 11 | 10 BrightMaster + 1 Bright Dream |
 | `mivan_video_observations.csv` | 30 | Slab-cycle workflow |
-| `cleaned_video_dataset.csv` | 17 | Modelling subset; none `modelling_ready` |
+| `cleaned_video_dataset.csv` | 17 | Modelling subset; none `framework_seed_ready` |
 | `manufacturer_specs.csv` | 10 | E3 only (T01–T04) |
 
 **Independent-sample counts (cleaned subset):** 12 Mivan + 7 robot observations (6 BrightMaster + 1 Bright Dream).

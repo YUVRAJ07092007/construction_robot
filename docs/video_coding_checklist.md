@@ -86,7 +86,7 @@ Video observations: E1 or E2 only.
 
 - **high** — clear visibility, minimal ambiguity
 - **medium** — usable with conservative interpretation
-- **low** — qualitative context only; do not mark modelling_ready
+- **low** — qualitative context only; do not mark framework_seed_ready
 
 ---
 

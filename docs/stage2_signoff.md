@@ -43,7 +43,7 @@ Stage 3 (generative augmentation / readiness index scoring) remains **future wor
 
 **Excluded:** OBS-M01-005, OBS-M01-008, OBS-M05-003 (`not_independent_sample`).
 
-**Promoted to `modelling_ready`:** 14 cleaned rows matching seed set.
+**Promoted to `framework_seed_ready`:** 14 cleaned rows matching seed set.
 
 ---
 

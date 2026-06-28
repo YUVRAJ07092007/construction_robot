@@ -57,7 +57,7 @@ def validate_seed_dataset(rows: list[dict[str, str]]) -> SeedValidationResult:
         result.add_error(f"missing columns: {missing}")
         return result
 
-    groups, legacy = load_activity_taxonomy()
+    groups, legacy, _context = load_activity_taxonomy()
     seen_ids: set[str] = set()
     seen_sources: set[str] = set()
 
@@ -72,8 +72,8 @@ def validate_seed_dataset(rows: list[dict[str, str]]) -> SeedValidationResult:
             result.add_error(f"{sid}: duplicate source_observation_id {source}")
         seen_sources.add(source)
 
-        if row.get("data_use") != "modelling_ready":
-            result.add_error(f"{sid}: data_use must be modelling_ready")
+        if row.get("data_use") != "framework_seed_ready":
+            result.add_error(f"{sid}: data_use must be framework_seed_ready")
         if row.get("duration_excluded") != "yes":
             result.add_error(f"{sid}: duration_excluded must be yes")
         if row.get("usable_for_productivity") != "no":

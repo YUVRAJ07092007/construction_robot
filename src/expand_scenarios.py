@@ -53,7 +53,24 @@ OUTPUT_HEADER = [
     "constraint_violation_count",
     "synthetic_provenance",
     "generation_date",
+    "record_origin",
+    "pilot_only",
+    "training_seed_count",
+    "not_for_statistical_inference",
+    "synthetic_generation_method",
+    "generation_note",
 ] + FEATURE_COLS
+
+
+def pilot_metadata(*, generation_method: str, note: str = "") -> dict[str, str]:
+    return {
+        "record_origin": "synthetic_pilot",
+        "pilot_only": "yes",
+        "training_seed_count": "14",
+        "not_for_statistical_inference": "yes",
+        "synthetic_generation_method": generation_method,
+        "generation_note": note or "Pilot scenario for framework logic stress-test; not observed data",
+    }
 
 CONGESTION_FROM_ENC = {"1": "low", "2": "medium", "3": "high"}
 ACCESS_FROM_ENC = {"1": "open", "2": "partially_restricted", "3": "congested"}
@@ -335,6 +352,7 @@ def expand(
                 "constraint_violation_count": str(violations),
                 "synthetic_provenance": "rule_expanded",
                 "generation_date": generation_date,
+                **pilot_metadata(generation_method="rule_expanded"),
                 **features,
             }
         )

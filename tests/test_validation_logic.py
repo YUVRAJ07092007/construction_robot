@@ -74,11 +74,11 @@ class TestValidationLogic:
         v.validate_robot_observations(result, rows)
         assert any("must not use E3" in e for e in result.errors)
 
-    def test_low_confidence_modelling_ready(self):
+    def test_low_confidence_framework_seed_ready(self):
         result = v.ValidationResult()
-        rows = _rows(CLEAN_HEADER, ("O5", "formwork", "pre-pour", "", "low", "open", "good", "invalid", "low", "high", "E2", "video_estimated", "modelling_ready", "no"))
+        rows = _rows(CLEAN_HEADER, ("O5", "formwork", "pre-pour", "", "low", "open", "good", "invalid", "low", "high", "E2", "video_estimated", "framework_seed_ready", "no"))
         v.validate_cleaned_logic(result, rows)
-        assert any("modelling_ready" in e for e in result.errors)
+        assert any("framework_seed_ready" in e for e in result.errors)
 
     def test_duplicate_group_without_independent_sample(self):
         result = v.ValidationResult()

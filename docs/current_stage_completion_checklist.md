@@ -21,7 +21,7 @@ Defines when the **Stage 1 video-extraction** phase is sufficiently complete to 
 - [x] Data quality report generated
 - [x] Robot-side observations sufficient for **multi-manufacturer** framework demo (partial — R22 Bright Dream leveling added; BrightMaster still majority)
 - [x] Mivan-side observations sufficient for workflow representation
-- [x] Low-confidence records not marked modelling_ready
+- [x] Low-confidence records not marked framework_seed_ready
 
 ---
 
@@ -55,4 +55,4 @@ Defines when the **Stage 1 video-extraction** phase is sufficiently complete to 
 - Validation passing; value-addition schema per [`cursor_prompts_construction_robot_value_addition.md`](../cursor_prompts_construction_robot_value_addition.md)
 - All 4 remaining `robot_source_candidates` marked `deferred_post_stage1`
 
-**Next:** Stage 3 generative augmentation design complete. Phase 3.1 implementation pending design review ([`stage3_design_checklist.md`](stage3_design_checklist.md)).
+**Next:** Manuscript preparation and field validation planning. See [`repository_status_matrix.md`](repository_status_matrix.md) and [`reviewer_notes.md`](reviewer_notes.md).

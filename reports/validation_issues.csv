@@ -1,4 +1,1 @@
-severity,message
-suggestion,video group DUP-MIVAN-SLAB-7DAY: consider marking one independent_sample=yes
-suggestion,mivan group DUP-MIVAN-SLAB-7DAY: consider marking one independent_sample=yes
-suggestion,cleaned group DUP-MIVAN-SLAB-7DAY: consider marking one independent_sample=yes
+issue_id,file,row_identifier,severity,field,problem,suggested_fix,status

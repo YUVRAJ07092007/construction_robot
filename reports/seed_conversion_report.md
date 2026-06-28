@@ -18,7 +18,7 @@
 
 - `independent_sample=yes`
 - Not flagged duplicate/parallel
-- `data_use` structured_coding (promoted to modelling_ready)
+- `data_use` structured_coding (promoted to framework_seed_ready)
 - `coding_confidence` medium or high
 - Evidence E1 or E2 only
 - `usable_for_productivity=no` enforced
@@ -53,7 +53,7 @@
 ## Output files
 
 - `data/gan_seed_dataset.csv` — GAN-ready seed feature table
-- `data/cleaned_video_dataset.csv` — promoted rows marked `modelling_ready`
+- `data/cleaned_video_dataset.csv` — promoted rows marked `framework_seed_ready`
 
 ## Research-safe note
 

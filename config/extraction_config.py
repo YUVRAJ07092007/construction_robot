@@ -24,7 +24,7 @@ ALLOW_DUAL_CATEGORY_CODING = True
 
 # --- Workflow ---
 # Stage 1 approved 2026-06-27; Stage 2 complete 2026-06-28; Phase 3.1 + 3C complete 2026-06-28.
-WORKFLOW = "stage_3_phase_3b_complete"
+WORKFLOW = "reviewer_improvements_complete"
 
 # --- Suitability criteria (max 2 points each, total max 14) ---
 SUITABILITY_CRITERIA = {

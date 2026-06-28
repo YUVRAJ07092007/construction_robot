@@ -120,9 +120,9 @@ Add or validate the column `data_use` where appropriate.
 | exclude | Not suitable for research use |
 | qualitative_only | Useful for workflow understanding only |
 | structured_coding | Suitable for structured extraction |
-| modelling_ready | Suitable for future seed dataset use after validation |
+| framework_seed_ready | Suitable for future seed dataset use after validation |
 
-At present, be conservative. Do not mark records as `modelling_ready` unless they pass schema, logic, confidence, and provenance checks.
+At present, be conservative. Do not mark records as `framework_seed_ready` unless they pass schema, logic, confidence, and provenance checks.
 
 ---
 

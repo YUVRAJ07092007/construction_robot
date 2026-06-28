@@ -72,7 +72,7 @@ manufacturer_name:
 seed_promotion_rules:
   require_independent_sample: yes
   exclude_duplicate_parallel: yes
-  allowed_data_use: [structured_coding, modelling_ready]
+  allowed_data_use: [structured_coding, framework_seed_ready]
   allowed_coding_confidence: [medium, high]
   allowed_evidence_level: [E1, E2]
   exclude_qualitative_only: yes

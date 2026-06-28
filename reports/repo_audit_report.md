@@ -90,7 +90,7 @@ See `config/data_dictionary.yaml` for authoritative column definitions. Core leg
 
 **Research-design gaps (expected at this stage):**
 - Robot-side observations still dominated by one manufacturer (BrightMaster)
-- `modelling_ready` not yet assigned conservatively
+- `framework_seed_ready` not yet assigned conservatively
 - Some pool sources catalogued but not individually coded
 
 **Data-quality gaps:**

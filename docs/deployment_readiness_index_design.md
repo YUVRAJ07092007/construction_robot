@@ -112,7 +112,7 @@ python scripts/complete_stage3c.py
 |------|--------|
 | Expert weight calibration | Not done |
 | Independent site validation | Required before quantitative claims |
-| Phase 3B tabular GAN + DRI on larger corpus | Deferred |
+| Phase 3B tabular GAN + DRI on larger corpus | **Pilot complete** (n=14); weight sensitivity in `dri_weight_sensitivity_report.md` |
 | Joint scenario DRI modifier using paired SCI | Optional enhancement |
 
 ---

@@ -79,7 +79,7 @@ Each observation received:
 - **Evidence level** E1 (directly visible) or E2 (visually estimated) for video data
 - **Coding confidence** (low / medium / high)
 - **source_type** (`video_observed` or `video_estimated`)
-- **data_use** (`structured_coding` or `qualitative_only`; no rows promoted to `modelling_ready` at Stage 1)
+- **data_use** (`structured_coding` or `qualitative_only`; no rows promoted to `framework_seed_ready` at Stage 1)
 
 ---
 
@@ -229,8 +229,8 @@ Mivan-only rows receive **Site Context Index (SCI)** only. Output: `dri_scored_s
 3. **Manufacturer imbalance** — Robot observations are mostly BrightMaster; one Bright Dream comparator (R22).  
 4. **Edited and promotional footage** — Especially robot demos and long Mivan tutorials with voiceover.  
 5. **Small seed sample** — 14 seeds; suitable for framework demonstration, not population inference.  
-6. **Generative augmentation** — Phase 3.1 complete (50 rule-expanded scenarios); tabular GAN pilot deferred.  
-7. **DRI scoring** — Phase 3C framework complete; scores are scenario-relative, **not field-validated**.
+6. **Generative augmentation** — Phase 3.1 and 3B pilot complete; synthetic rows marked pilot-only.  
+7. **DRI scoring** — Phase 3C framework complete; scenario-relative with weight sensitivity analysis; **not field-validated**.
 
 ---
 

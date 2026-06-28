@@ -50,7 +50,6 @@ activity_groups:
 legacy_label_map:
   # Robot / cleaned unified labels
   concrete_leveling: fresh_concrete_leveling
-  concrete_finishing: post_cast_coating
   coating_finishing: post_cast_coating
   floor_grinding: post_cast_floor_grinding
   formwork: formwork_work
@@ -89,6 +88,18 @@ legacy_label_map:
   vertical_rebar_and_wall_prep: rebar_work
   vertical_rebar_fixing: rebar_work
   wall_tie_hole_filling: post_cast_surface_preparation
+
+# Context-aware mapping when surface condition is known (do not auto-map to post-cast).
+context_aware_label_map:
+  concrete_finishing:
+    default_group: unknown
+    requires_surface_check:
+      wet_concrete: fresh_concrete_finishing
+      partially_finished: fresh_concrete_finishing
+      partially_set: fresh_concrete_finishing
+      hardened_concrete: post_cast_surface_preparation
+      indoor_hardened_floor: post_cast_coating
+      unknown: unknown
 
 correction_principle: >
   Do not label indoor coating or hardened-surface finishing as fresh concrete finishing.

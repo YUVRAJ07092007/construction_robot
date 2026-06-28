@@ -1,1 +1,1 @@
-spec_id,source_id,source_url,robot_or_process,parameter_name,parameter_value,unit,evidence_level,notes,manufacturer_name,robot_brand,robot_model,robot_category,source_type,data_use,manufacturer_verified
+spec_id,source_id,source_url,robot_or_process,parameter_name,parameter_value,unit,evidence_level,notes,manufacturer_name,robot_brand,robot_model,robot_category,source_type,data_use,manufacturer_verified,claim_type,claim_use,independent_verification_status,used_in_model,model_use_note

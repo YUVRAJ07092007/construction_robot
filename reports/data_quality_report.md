@@ -1,6 +1,6 @@
 # Data Quality Report
 
-**Status:** Stage 1 approved (2026-06-27). Stage 2 GAN seed conversion **complete** (2026-06-28).
+**Status:** Extraction **ongoing**; pilot/framework demonstration **reviewer_ready_with_limitations**. See `docs/repository_status_matrix.md`. Stage 2 GAN seed conversion **complete** (2026-06-28).
 
 > The dataset is a secondary observational dataset derived from publicly available videos and manufacturer-reported specifications. It is not direct field-measured productivity data.
 
@@ -33,7 +33,7 @@
 - Synthetic scenario records (rule): 50
 - Synthetic scenario records (GAN pilot): 50
 - Synthetic scenario records (combined): 100
-- Cleaned rows promoted to modelling_ready: 14
+- Cleaned rows promoted to framework_seed_ready: 14
 
 ## Evidence-level distribution (observations)
 
@@ -64,11 +64,14 @@
 - Videos flagged duplicate/parallel: 3
 - Duplicate groups: 2
 
-## Robot manufacturer distribution
+## Robot manufacturer distribution (observations)
 
-- Bright Dream: 1
-- BrightMaster: 19
-- unknown: 2
+- BrightMaster: 10
+- Non-BrightMaster: 1
+
+- Bright Dream (registry): 1
+- BrightMaster (registry): 19
+- unknown (registry): 2
 
 ## Activity taxonomy distribution
 
@@ -86,7 +89,22 @@
 - rebar: 4
 - stripping: 1
 
-## Missing-value summary (key fields)
+## Data-use distribution (cleaned)
+
+- framework_seed_ready: 14
+- qualitative_only: 1
+- structured_coding: 2
+
+## Records requiring review
+
+- Low-confidence or qualitative-only cleaned rows: 1
+
+## Extraction gaps
+
+- More non-BrightMaster robot video coding needed for balanced demonstration
+- Field validation not yet performed
+- Synthetic GAN pilot limited to n=14 training seeds
+
 
 **robot:** evidence_level missing=0, source_type missing=0, data_use missing=0
 **mivan:** evidence_level missing=0, access_condition missing=0
@@ -94,7 +112,7 @@
 
 ## Modelling readiness
 
-- modelling_ready cleaned rows: 14
+- framework_seed_ready cleaned rows: 14
 - Not promoted (structured_coding / qualitative_only): 3
 - Seed records (independent sample only): 14
 - Invalid-duration segments: 46

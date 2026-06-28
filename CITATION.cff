@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+title: "Video-Informed Framework for Construction Robot Deployment Readiness in Aluminium Formwork Construction"
+message: "If you use this repository, please cite it as below."
+authors:
+  - family-names: "Yadav"
+    given-names: "Yuvraj"
+repository-code: "https://github.com/YUVRAJ07092007/construction_robot"
+url: "https://github.com/YUVRAJ07092007/construction_robot"
+license: MIT
+keywords:
+  - construction robotics
+  - aluminium formwork
+  - Mivan
+  - video-informed extraction
+  - deployment readiness
+preferred-citation: >
+  Yadav, Y. (2026). Video-Informed Framework for Construction Robot Deployment
+  Readiness in Aluminium Formwork Construction [Software]. GitHub.
+  https://github.com/YUVRAJ07092007/construction_robot
