@@ -31,7 +31,7 @@ Defines when the **Stage 1 video-extraction** phase is sufficiently complete to 
 2. Structured-extraction videos segmented and coded
 3. `python src/validate_extractions.py` passes
 4. Documentation and data dictionary in place
-5. **Pause for human review** — do not start Stage 2 without approval
+5. ~~**Pause for human review**~~ — **Approved 2026-06-27** ([`stage1_signoff.md`](stage1_signoff.md))
 
 ---
 
@@ -44,13 +44,15 @@ Defines when the **Stage 1 video-extraction** phase is sufficiently complete to 
 
 ---
 
-## Current status (2026-06-28)
+## Current status (2026-06-27)
 
-**Stage 1: Complete — pending review**
+**Stage 1: Approved**
 
+- Human sign-off recorded in [`stage1_signoff.md`](stage1_signoff.md)
+- Spot-check validated OBS-M02-005, OBS-M02-010, OBS-R22-001
 - 32 registry sources; 16 structured-extraction videos
 - 11 robot + 30 Mivan observations; 17 cleaned rows (3 fresh-concrete leveling: R02, R09, R22)
-- Validation passing; value-addition schema and reports added
-- All 4 remaining `robot_source_candidates` marked `deferred_post_stage1` (not blocking Stage 1)
+- Validation passing; value-addition schema per [`cursor_prompts_construction_robot_value_addition.md`](../cursor_prompts_construction_robot_value_addition.md)
+- All 4 remaining `robot_source_candidates` marked `deferred_post_stage1`
 
-**Next after review:** Stage 2 GAN-ready seed dataset preparation (deferred).
+**Next:** Stage 3 generative augmentation design complete. Phase 3.1 implementation pending design review ([`stage3_design_checklist.md`](stage3_design_checklist.md)).

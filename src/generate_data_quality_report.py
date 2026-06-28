@@ -37,6 +37,10 @@ def main() -> None:
     mivan = read_csv("mivan_video_observations.csv")
     cleaned = read_csv("cleaned_video_dataset.csv")
     specs = read_csv("manufacturer_specs.csv")
+    seeds = read_csv("gan_seed_dataset.csv")
+    synthetic = read_csv("synthetic_scenario_dataset.csv")
+    synthetic_gan = read_csv("synthetic_scenario_dataset_gan.csv")
+    synthetic_all = read_csv("synthetic_scenario_dataset_all.csv")
 
     structured_videos = [r for r in meta if r.get("suitability_band") == "structured_extraction"]
     qualitative_videos = [r for r in meta if r.get("suitability_band") in {"qualitative_only", "source_pool"}]
@@ -47,13 +51,19 @@ def main() -> None:
     activity_mivan = count_values(mivan, "slab_activity_type")
     activity_clean = count_values(cleaned, "activity_type")
 
-    not_modelling = [r for r in cleaned if r.get("data_use") != "modelling_ready" or r.get("usable_for_productivity") == "no"]
+    modelling_ready = [r for r in cleaned if r.get("data_use") == "modelling_ready"]
+    not_promoted = [r for r in cleaned if r.get("data_use") != "modelling_ready"]
+
+    stage2_note = (
+        "Stage 2 GAN seed conversion **complete** (2026-06-28)."
+        if seeds
+        else "Stage 2 GAN seed conversion not yet run."
+    )
 
     lines = [
         "# Data Quality Report",
         "",
-        "**Status:** Stage 1 video data extraction is **complete** (pending human review). "
-        "This report describes the final Stage 1 snapshot.",
+        "**Status:** Stage 1 approved (2026-06-27). " + stage2_note,
         "",
         "> The dataset is a secondary observational dataset derived from publicly available videos "
         "and manufacturer-reported specifications. It is not direct field-measured productivity data.",
@@ -67,6 +77,10 @@ def main() -> None:
         f"| robot_video_observations.csv | {len(robot)} |",
         f"| mivan_video_observations.csv | {len(mivan)} |",
         f"| cleaned_video_dataset.csv | {len(cleaned)} |",
+        f"| gan_seed_dataset.csv | {len(seeds)} |",
+        f"| synthetic_scenario_dataset.csv | {len(synthetic)} |",
+        f"| synthetic_scenario_dataset_gan.csv | {len(synthetic_gan)} |",
+        f"| synthetic_scenario_dataset_all.csv | {len(synthetic_all)} |",
         f"| manufacturer_specs.csv | {len(specs)} |",
         "",
         "## Summary metrics",
@@ -79,6 +93,11 @@ def main() -> None:
         f"- Mivan observations: {len(mivan)}",
         f"- Manufacturer spec records: {len(specs)}",
         f"- Cleaned modelling subset rows: {len(cleaned)}",
+        f"- GAN seed records: {len(seeds)}",
+        f"- Synthetic scenario records (rule): {len(synthetic)}",
+        f"- Synthetic scenario records (GAN pilot): {len(synthetic_gan)}",
+        f"- Synthetic scenario records (combined): {len(synthetic_all)}",
+        f"- Cleaned rows promoted to modelling_ready: {len(modelling_ready)}",
         "",
         "## Evidence-level distribution (observations)",
         "",
@@ -139,24 +158,49 @@ def main() -> None:
         miss = missing_summary(rows, fields)
         lines.append(f"**{name}:** " + ", ".join(f"{f} missing={miss[f]}" for f in fields))
     lines.append("")
-    lines.append("## Records not suitable for modelling")
+    lines.append("## Modelling readiness")
     lines.append("")
-    lines.append(f"- Cleaned rows not marked modelling_ready or with productivity blocked: {len(not_modelling)}")
+    lines.append(f"- modelling_ready cleaned rows: {len(modelling_ready)}")
+    lines.append(f"- Not promoted (structured_coding / qualitative_only): {len(not_promoted)}")
+    lines.append(f"- Seed records (independent sample only): {len(seeds)}")
     lines.append(f"- Invalid-duration segments: {sum(1 for r in segments if (r.get('duration_validity') or '').lower() == 'invalid')}")
+    lines.append(f"- usable_for_productivity=yes count: {sum(1 for r in segments if (r.get('usable_for_productivity') or '').lower() == 'yes')} (should be 0)")
     lines.append("")
-    lines.append("## Stage 1 completion")
+    if seeds:
+        lines.append("## GAN seed dataset")
+        lines.append("")
+        lines.append(f"- Mivan seeds: {sum(1 for r in seeds if r.get('video_category') == 'mivan')}")
+        lines.append(f"- Robot seeds: {sum(1 for r in seeds if r.get('video_category') == 'robot')}")
+        lines.append(f"- All seeds duration_excluded=yes: {all(r.get('duration_excluded') == 'yes' for r in seeds)}")
+        lines.append("")
+    if synthetic:
+        lines.append("## Synthetic scenario dataset (Phase 3.1)")
+        lines.append("")
+        lines.append(f"- Rule-expanded scenarios: {len(synthetic)}")
+        lines.append(f"- All is_synthetic=yes: {all(r.get('is_synthetic') == 'yes' for r in synthetic)}")
+        fam = Counter(r.get("scenario_family", "?") for r in synthetic)
+        for k, v in sorted(fam.items()):
+            lines.append(f"- {k}: {v}")
+        lines.append("")
+    lines.append("## Stage completion")
     lines.append("")
-    lines.append("- All priority sources screened (no `pending_screening` in registry)")
-    lines.append("- All structured-extraction videos segmented and coded")
-    lines.append("- Robot source candidates: 4 screened, 4 deferred to post-Stage-1 expansion")
-    lines.append("- Validation passing; awaiting human review sign-off before Stage 2")
+    lines.append("- Stage 1 sign-off: `docs/stage1_signoff.md`")
+    if seeds:
+        lines.append("- Stage 2 seed conversion: `docs/stage2_signoff.md`")
+    if synthetic:
+        lines.append("- Phase 3.1 rule expansion: `reports/synthetic_expansion_report.md`")
+    else:
+        lines.append("- Phase 3.1 rule expansion: not started")
+    if synthetic_gan:
+        lines.append("- Phase 3B tabular GAN pilot: `reports/tabular_gan_pilot_report.md`")
+    else:
+        lines.append("- Phase 3B tabular GAN pilot: not started")
+    lines.append("- Robot source candidates: 4 deferred to optional expansion")
     lines.append("")
-    lines.append("## Optional future expansion (not in Stage 1 scope)")
+    lines.append("## Optional future expansion")
     lines.append("")
     lines.append("- Additional comparison robots (Floor Master, Kajima, rebar tying, inspection)")
-    lines.append("- More independent fresh-concrete leveling observations from verified sources")
-    lines.append("- Mivan playlist entries only where workflow adds non-duplicate value")
-    lines.append("- Re-screen low-confidence or excluded sources before any modelling_ready promotion")
+    lines.append("- Field validation before quantitative deployment-readiness claims")
     lines.append("")
 
     REPORTS.mkdir(parents=True, exist_ok=True)

@@ -1,0 +1,79 @@
+# Categorical and ordinal encodings for GAN-ready seed records (Stage 2).
+# Human-readable labels are retained in gan_seed_dataset.csv alongside *_enc columns.
+
+video_category:
+  mivan: 0
+  robot: 1
+
+workflow_stage:
+  pre-pour: 1
+  pour: 2
+  post-cast: 3
+  unknown: 0
+
+ordinal_low_medium_high:
+  low: 1
+  medium: 2
+  high: 3
+  unknown: 0
+  "": 0
+
+access_condition:
+  open: 1
+  partially_restricted: 2
+  congested: 3
+  unknown: 0
+  "": 0
+
+safety_condition:
+  poor: 1
+  moderate: 2
+  good: 3
+  unknown: 0
+  "": 0
+
+operating_surface:
+  wet_concrete: 1
+  pre_pour_slab: 2
+  hardened_concrete: 3
+  unknown: 0
+  "": 0
+
+movement_pattern:
+  linear: 1
+  grid-based: 2
+  guided: 3
+  point_to_point: 4
+  unknown: 0
+  "": 0
+
+coding_confidence:
+  low: 1
+  medium: 2
+  high: 3
+
+evidence_level:
+  E1: 1
+  E2: 2
+
+comparison_robot:
+  yes: 1
+  no: 0
+  "": 0
+  na: 0
+
+manufacturer_name:
+  BrightMaster: 1
+  Bright Dream: 2
+  unknown: 0
+  none: 0
+  "": 0
+
+seed_promotion_rules:
+  require_independent_sample: yes
+  exclude_duplicate_parallel: yes
+  allowed_data_use: [structured_coding, modelling_ready]
+  allowed_coding_confidence: [medium, high]
+  allowed_evidence_level: [E1, E2]
+  exclude_qualitative_only: yes
+  exclude_usable_for_productivity: yes

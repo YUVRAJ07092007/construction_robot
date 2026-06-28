@@ -4,7 +4,7 @@ Structured observational coding pipeline for research on **construction robot de
 
 Public videos and manufacturer pages are used as **secondary observational sources** — not as field-measured productivity data. Outputs support framework development and scenario modelling.
 
-**Project scope:** **Stage 1 complete — pending review.** Stage 2 (GAN seed conversion) is **deferred** until Stage 1 is reviewed and approved.
+**Project scope:** Stages 1–2 complete · Phase 3.1 (50 rule synthetics) · **Phase 3B GAN pilot complete** · **Phase 3C DRI framework complete**.
 
 **Robot-agnostic design:** BrightMaster Robotics is one source among many. The schema supports comparison robots from any manufacturer (`manufacturer_name`, `comparison_robot`, `robot_source_candidates.csv`).
 
@@ -24,6 +24,8 @@ Public videos and manufacturer pages are used as **secondary observational sourc
 | **E3 specs** | Manufacturer-reported technical parameters (separate from video coding) |
 | **Validation** | Python checks + reports for schema and construction logic |
 | **Data dictionary** | `config/data_dictionary.yaml`, `config/activity_taxonomy.yaml` |
+| **Seed dataset** | GAN-ready seeds + 14×17 feature matrix |
+| **Stage 3 design** | Generative augmentation architecture (no synthetic output yet) |
 
 ---
 
@@ -32,38 +34,66 @@ Public videos and manufacturer pages are used as **secondary observational sourc
 ```text
 construction_robot/
 ├── README.md
+├── cursor_prompts_construction_robot_value_addition.md   # Stage 1 QA / schema hardening prompts (15/15 done)
+├── video_informed_task_level_data_extraction_algorithm.md
+├── brightmaster_mivan_video_links_suitability_review.md
 ├── config/
 │   ├── extraction_config.py
 │   ├── data_dictionary.yaml
-│   └── activity_taxonomy.yaml
+│   ├── activity_taxonomy.yaml
+│   ├── seed_encoding_schema.yaml
+│   ├── generative_augmentation_config.yaml
+│   └── dri_framework_config.yaml
 ├── data/
 │   ├── video_metadata.csv
 │   ├── video_segments.csv
 │   ├── robot_video_observations.csv
 │   ├── mivan_video_observations.csv
 │   ├── cleaned_video_dataset.csv
+│   ├── gan_seed_dataset.csv
+│   ├── modelling_feature_matrix.csv
+│   ├── synthetic_scenario_dataset.csv
+│   ├── dri_scored_scenarios.csv
 │   ├── manufacturer_specs.csv
 │   ├── robot_source_candidates.csv
 │   └── templates/
 ├── docs/
 │   ├── video_coding_checklist.md
-│   └── current_stage_completion_checklist.md
+│   ├── current_stage_completion_checklist.md
+│   ├── stage1_signoff.md
+│   ├── stage2_signoff.md
+│   ├── gan_seed_conversion_algorithm.md
+│   ├── generative_augmentation_design.md
+│   ├── deployment_readiness_index_design.md
+│   ├── phase3_1_signoff.md
+│   ├── phase3c_signoff.md
+│   └── paper_methods_draft.md
 ├── reports/
 │   ├── repo_audit_report.md
 │   ├── validation_report.md
 │   ├── data_quality_report.md
+│   ├── seed_conversion_report.md
+│   ├── synthetic_expansion_report.md
+│   ├── dri_scoring_report.md
 │   └── current_stage_readiness_review.md
 ├── scripts/
+│   ├── complete_stage2.py
+│   ├── complete_stage3.py
+│   └── complete_stage3c.py
 └── src/
     ├── validate_extractions.py
-    └── generate_data_quality_report.py
+    ├── generate_data_quality_report.py
+    ├── convert_gan_seed.py
+    ├── expand_scenarios.py
+    ├── compute_dri_scores.py
+    └── validate_dri_scores.py
 ```
 
 ---
 
 ## Pipeline overview
 
-### Stage 1 — Video extraction (**complete — pending review**)
+### Stage 1 — Video extraction (**approved 2026-06-27**)
 
 1. **Registry** — Record each video/source with metadata  
 2. **Screen** — Score suitability 0–14 (7 criteria × 0–2)  
@@ -73,19 +103,56 @@ construction_robot/
 6. **Validate** — Apply construction logic rules  
 7. **Export** — Five CSV outputs + cleaned merge  
 
-**Stop point:** Stage 1 coding complete. **Pause for human review.** Do not proceed to Stage 2.
+Sign-off: [`docs/stage1_signoff.md`](docs/stage1_signoff.md)
 
-**Stage 1 completion checklist**
+### Stage 2 — GAN seed conversion (**complete 2026-06-28**)
 
-- [x] All priority sources screened in `video_metadata.csv`
-- [x] Structured-extraction videos segmented and coded
-- [x] `manufacturer_specs.csv` populated for E3 references (T01–T04)
-- [x] `python src/validate_extractions.py` passes
-- [ ] Review sign-off on coding quality and research-safe framing
+1. **Promote** — Apply independent-sample and confidence rules to cleaned rows  
+2. **Normalize** — Map activities to taxonomy groups  
+3. **Encode** — Add integer `*_enc` columns per `seed_encoding_schema.yaml`  
+4. **Export** — `gan_seed_dataset.csv` + update `modelling_ready` flags  
+5. **Validate** — Seed schema checks + Stage 1 re-validation  
 
-### Stage 2 — GAN seed conversion (deferred)
+**Not included:** GAN model training or synthetic record generation.
 
-Convert cleaned video-derived data into normalised seed records for synthetic scenario generation. **Not in scope until Stage 1 review approval.**
+```bash
+python scripts/complete_stage2.py
+```
+
+Sign-off: [`docs/stage2_signoff.md`](docs/stage2_signoff.md)
+
+### Stage 3 — Generative augmentation (**Phase 3.1 complete**)
+
+Rule-based scenario expansion from 14 seeds → **50 synthetic scenarios**.
+
+```bash
+python scripts/complete_stage3.py
+```
+
+Docs: [`generative_augmentation_design.md`](docs/generative_augmentation_design.md) · [`phase3_1_signoff.md`](docs/phase3_1_signoff.md)
+
+### Stage 3C — Deployment Readiness Index (**complete**)
+
+Weighted composite scoring (5 dimensions) on seeds + synthetics. Scenario-relative; **not field-validated**.
+
+```bash
+python scripts/complete_stage3c.py
+```
+
+Docs: [`deployment_readiness_index_design.md`](docs/deployment_readiness_index_design.md) · [`phase3c_signoff.md`](docs/phase3c_signoff.md)
+
+### Stage 3B — Tabular GAN/VAE pilot (**complete**)
+
+CTGAN/TVAE pilot on 14×15 feature matrix → **50 GAN scenarios** (constraint-filtered), combined with rule synthetics → 100 total.
+
+```bash
+pip install -r requirements-gan-pilot.txt
+python scripts/complete_stage3b.py
+```
+
+Docs: [`phase3b_signoff.md`](docs/phase3b_signoff.md) · [`reports/tabular_gan_pilot_report.md`](reports/tabular_gan_pilot_report.md)
+
+**Deferred:** Expert weight calibration, field validation.
 
 ---
 
@@ -97,7 +164,12 @@ Convert cleaned video-derived data into normalised seed records for synthetic sc
 | `video_segments.csv` | 46 | M01–M03, M05–M06, R02, R05–R13, R15, R22 |
 | `robot_video_observations.csv` | 11 | BrightMaster demos + Bright Dream R22 comparison |
 | `mivan_video_observations.csv` | 30 | Slab-cycle workflow coding |
-| `cleaned_video_dataset.csv` | 17 | Key rows for modelling |
+| `cleaned_video_dataset.csv` | 17 | 14 promoted to `modelling_ready` |
+| `gan_seed_dataset.csv` | 14 | Independent-sample seeds |
+| `synthetic_scenario_dataset.csv` | 50 | Rule-expanded Phase 3.1 |
+| `synthetic_scenario_dataset_gan.csv` | 50 | Tabular GAN/VAE Phase 3B |
+| `synthetic_scenario_dataset_all.csv` | 100 | Rule + GAN combined |
+| `dri_scored_scenarios.csv` | 64 (114 with `--all-synthetic`) | DRI framework scores |
 | `manufacturer_specs.csv` | 10 | T01–T04 E3 reference values |
 
 **Structured-extraction videos:** M01–M03, M05–M06 · R02, R05–R07, R09–R13, R15, R22
@@ -141,13 +213,25 @@ Visible segment duration is **not** productivity time unless independently verif
 Requires **Python 3.10+**. Core scripts use stdlib only; `pytest` optional for tests.
 
 ```bash
-# Validate datasets
+# Validate Stage 1 datasets
 python src/validate_extractions.py
+
+# Stage 2: convert seeds + validate + refresh reports
+python scripts/complete_stage2.py
+
+# Stage 3 design: feature matrix + constraint baseline
+python scripts/complete_stage3_design.py
+
+# Phase 3.1: expand synthetic scenarios
+python scripts/complete_stage3.py
+
+# Phase 3C: DRI framework scoring
+python scripts/complete_stage3c.py
 
 # Generate data quality report
 python src/generate_data_quality_report.py
 
-# Run validation tests
+# Run all tests
 pytest tests/
 ```
 
@@ -182,8 +266,17 @@ See `docs/video_coding_checklist.md` for the full operational guide.
 
 - [Video extraction algorithm](video_informed_task_level_data_extraction_algorithm.md)
 - [Video & source suitability review](brightmaster_mivan_video_links_suitability_review.md)
+- [Value-addition prompts](cursor_prompts_construction_robot_value_addition.md) — schema/QA hardening (15/15 complete)
+- [Stage 1 sign-off](docs/stage1_signoff.md)
+- [Stage 2 sign-off](docs/stage2_signoff.md)
+- [GAN seed conversion algorithm](docs/gan_seed_conversion_algorithm.md)
+- [Generative augmentation design](docs/generative_augmentation_design.md)
+- [Deployment Readiness Index design](docs/deployment_readiness_index_design.md)
+- [Phase 3C sign-off](docs/phase3c_signoff.md)
+- [Paper Methods draft](docs/paper_methods_draft.md)
 - [Current stage completion checklist](docs/current_stage_completion_checklist.md)
-- [Readiness review](reports/current_stage_readiness_review.md) — label: **framework_ready**
+- [Readiness review](reports/current_stage_readiness_review.md) — label: **seed_dataset_ready** (Stage 3 design complete)
+- [Prompts execution status](reports/prompts_execution_status.md)
 
 ---
 

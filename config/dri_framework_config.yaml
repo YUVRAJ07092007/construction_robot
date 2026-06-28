@@ -1,0 +1,100 @@
+# Deployment Readiness Index (DRI) — Phase 3C framework configuration.
+# Scenario-relative scoring only; NOT field-validated performance.
+
+version: "0.1"
+design_date: "2026-06-28"
+prerequisite: phase_3a_complete
+
+scoring_scope:
+  description: >
+    DRI applies to robot deployment scenarios. Robot-only and joint-deployment
+    scenario families receive full composite scores. Mivan-only rows receive
+    Site Context Index (SCI) for worksite compatibility context only.
+  full_dri_record_types:
+    - robot_seed
+    - robot_synthetic
+    - joint_synthetic
+  sci_only_record_types:
+    - mivan_seed
+    - mivan_synthetic
+
+# Dimension weights (must sum to 1.0 for full DRI).
+dimensions:
+  work_zone_access:
+    weight: 0.25
+    description: Open access and lower congestion favour robot deployment
+    inputs: [congestion_level_enc, access_condition_enc]
+  workflow_fit:
+    weight: 0.25
+    description: Activity aligns with workflow stage and expected surface
+    inputs: [activity_group_enc, workflow_stage_enc, operating_surface_enc]
+  human_robot_coexistence:
+    weight: 0.20
+    description: Visible operator support and non-extreme labour density
+    inputs: [labour_count_visible, robot_operator_count, video_category_enc]
+  surface_task_alignment:
+    weight: 0.20
+    description: Fresh-concrete vs post-cast surface matches activity group
+    inputs: [activity_group_enc, operating_surface_enc]
+  evidence_confidence:
+    weight: 0.10
+    description: Provenance quality from video coding (E1/E2, confidence)
+    inputs: [evidence_level_enc, coding_confidence_enc]
+
+# Site Context Index (Mivan-only rows): two dimensions reweighted.
+sci_dimensions:
+  work_zone_access:
+    weight: 0.50
+  workflow_fit:
+    weight: 0.50
+
+# Ordinal scoring anchors (1=best for access/congestion in deployment terms).
+ordinal_best:
+  congestion_level_enc: 1   # low congestion
+  access_condition_enc: 1   # open access
+  safety_condition_enc: 3   # good safety
+
+# Activity-workflow expected pairs (enc values as strings).
+workflow_stage_enc:
+  pre_pour: "1"
+  pour: "2"
+  post_cast: "3"
+
+activity_workflow_map:
+  "1": ["1", "3"]   # formwork_work: pre-pour, post-cast
+  "2": ["1"]        # mep_conduit_work
+  "3": ["2"]        # concrete_pouring
+  "4": ["2"]        # fresh_concrete_leveling
+  "5": ["2"]        # fresh_concrete_finishing
+  "6": ["3"]        # post_cast_floor_grinding
+  "7": ["3"]        # post_cast_coating
+  "8": ["3"]        # post_cast_surface_preparation
+  "9": ["1"]        # layout_marking
+  "10": ["1"]       # rebar_work
+  "11": ["1", "2", "3"]
+  "12": ["1", "2", "3"]
+  "13": ["1", "2", "3"]
+
+fresh_concrete_activity_enc: ["4", "5"]
+post_cast_activity_enc: ["6", "7", "8"]
+wet_surface_enc: ["1", "2"]
+hardened_surface_enc: ["3"]
+
+# DRI band thresholds (scenario-relative composite 0-100).
+bands:
+  low: [0, 39]
+  medium: [40, 69]
+  high: [70, 100]
+  not_applicable: null
+
+output:
+  score_provenance: framework_derived_scenario_relative
+  include_rank: true
+  rank_within: dri_applicable_robot_and_joint
+
+research_limits:
+  - not_field_validated
+  - scenario_relative_ranking_only
+  - no_productivity_or_cycle_time_in_score
+  - e3_specs_excluded_from_scoring
+  - independent_site_validation_required_for_quantitative_claims

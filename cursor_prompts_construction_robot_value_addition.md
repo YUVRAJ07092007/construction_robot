@@ -1,5 +1,9 @@
 # Cursor AI Prompt File: Value Addition for Construction Robot Video Data Extraction Repository
 
+**Execution status:** 15/15 prompts complete. Stage 1 approved 2026-06-27. Stage 2 seed conversion complete 2026-06-28.
+
+---
+
 ## Repository Context
 
 GitHub repository: `YUVRAJ07092007/construction_robot`
@@ -8,7 +12,7 @@ Research direction:
 
 **Video-informed and robot-agnostic data extraction framework for assessing construction robot deployment readiness in aluminium formwork-based high-rise building construction, commonly known in India as Mivan construction.**
 
-The work is currently at the **data extraction stage**. Data extraction is ongoing and not complete. The immediate objective is to strengthen the quality, logic, traceability, and research-readiness of the extracted video-derived dataset.
+The work completed **Stage 1 video data extraction** (approved 2026-06-27). The prompt file documents the value-addition hardening pass applied to the repository.
 
 The repository already contains a structure similar to:
 

@@ -375,10 +375,8 @@ The extracted dataset should be described in the paper as follows:
 
 # Note for Next Stage
 
-This is the **first-stage algorithm** for video data extraction only.
+Stage 1 video extraction is **approved** ([`docs/stage1_signoff.md`](docs/stage1_signoff.md)).
 
-**Current project decision:** Finish Stage 1, validate outputs, and **stop for review**. Do not implement Stage 2 (GAN-ready seed conversion) until Stage 1 datasets and coding are reviewed and approved.
+Stage 2 GAN-ready seed conversion is **complete** — see [`docs/gan_seed_conversion_algorithm.md`](docs/gan_seed_conversion_algorithm.md) and [`docs/stage2_signoff.md`](docs/stage2_signoff.md).
 
-A future algorithm may cover:
-
-**Cleaning and converting the extracted dataset into GAN-ready seed data.**
+Stage 3 (generative augmentation / synthetic scenario generation) **design is complete** — see [`docs/generative_augmentation_design.md`](docs/generative_augmentation_design.md). Implementation (Phase 3.1) not started.

@@ -4,7 +4,9 @@
 **Branch:** main  
 **Audit:** Full re-audit against `cursor_prompts_construction_robot_value_addition.md`
 
-Stage 1 extraction is **complete** (pending human review). Stage 2 (GAN seed conversion) is **not in scope**.
+Stage 1 approved (2026-06-27). Stage 2 seed conversion **complete** (2026-06-28).
+
+Paper Methods: [`docs/paper_methods_draft.md`](../docs/paper_methods_draft.md). Stage 2: [`docs/stage2_signoff.md`](../docs/stage2_signoff.md). Prompt spec: [`cursor_prompts_construction_robot_value_addition.md`](../cursor_prompts_construction_robot_value_addition.md).
 
 | # | Prompt | Status | Notes |
 |---|--------|--------|-------|
@@ -44,4 +46,4 @@ pytest tests/                       → 13 passed
 
 ## Readiness label
 
-**framework_ready** — suitable for methodology demonstration; not seed_dataset_ready.
+**framework_ready → seed_dataset_ready** — Stage 2 seed conversion complete (14 seeds).

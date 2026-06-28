@@ -1,0 +1,15 @@
+seed_id,source_observation_id,video_category_enc,activity_group_enc,workflow_stage_enc,movement_pattern_enc,operating_surface_enc,congestion_level_enc,reinforcement_complexity_enc,access_condition_enc,safety_condition_enc,evidence_level_enc,coding_confidence_enc,manufacturer_name_enc,comparison_robot_enc,labour_count_visible,robot_operator_count
+SEED-001,OBS-M01-003,0,1,1,0,0,3,2,3,2,1,2,0,0,6,0
+SEED-002,OBS-M02-005,0,1,1,0,0,3,2,3,2,1,3,0,0,8,0
+SEED-003,OBS-M02-009,0,2,1,0,0,2,2,2,2,1,3,0,0,4,0
+SEED-004,OBS-M02-010,0,3,2,0,0,2,2,1,2,1,3,0,0,8,0
+SEED-005,OBS-M02-013,0,1,3,0,0,2,1,2,2,1,3,0,0,6,0
+SEED-006,OBS-R02-001,1,4,2,1,1,1,0,1,2,1,2,1,0,0,1
+SEED-007,OBS-R05-001,1,7,3,2,3,1,0,1,3,2,2,1,0,0,0
+SEED-008,OBS-R06-001,1,6,3,3,3,1,0,1,3,2,2,1,0,0,0
+SEED-009,OBS-M03-002,0,1,1,0,0,2,2,2,2,2,2,0,0,4,0
+SEED-010,OBS-R09-001,1,4,2,1,1,1,0,1,3,2,2,1,0,0,1
+SEED-011,OBS-R10-001,1,6,3,2,3,1,0,1,3,2,2,1,0,0,0
+SEED-012,OBS-R15-001,1,9,1,4,2,1,0,1,3,2,2,1,0,0,0
+SEED-013,OBS-M06-001,0,8,3,0,0,2,1,2,2,2,2,0,0,4,0
+SEED-014,OBS-R22-001,1,4,2,1,1,1,0,1,3,2,2,2,0,0,1

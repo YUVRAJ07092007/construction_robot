@@ -1,0 +1,1 @@
+record_id,record_type,source_table,scenario_family,dri_applicable,sci_only,dri_access_score,dri_workflow_score,dri_coexistence_score,dri_surface_score,dri_evidence_score,dri_total_score,sci_total_score,dri_band,dri_rank,score_provenance,scoring_date

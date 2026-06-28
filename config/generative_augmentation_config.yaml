@@ -1,0 +1,147 @@
+# Stage 3: Generative augmentation design parameters.
+# Design phase only — no GAN training or synthetic record generation in this file.
+
+stage: phase_3c_complete
+version: "0.1"
+design_date: "2026-06-28"
+prerequisite: stage_2_seed_complete
+
+# Exact columns exported to modelling_feature_matrix.csv (GAN / VAE input vector).
+modelling_features:
+  categorical_enc:
+    - video_category_enc
+    - activity_group_enc
+    - workflow_stage_enc
+    - movement_pattern_enc
+    - operating_surface_enc
+    - congestion_level_enc
+    - reinforcement_complexity_enc
+    - access_condition_enc
+    - safety_condition_enc
+    - evidence_level_enc
+    - coding_confidence_enc
+    - manufacturer_name_enc
+    - comparison_robot_enc
+  numeric:
+    - labour_count_visible
+    - robot_operator_count
+
+# Activity group integer encoding (taxonomy-aligned).
+activity_group:
+  formwork_work: 1
+  mep_conduit_work: 2
+  concrete_pouring: 3
+  fresh_concrete_leveling: 4
+  fresh_concrete_finishing: 5
+  post_cast_floor_grinding: 6
+  post_cast_coating: 7
+  post_cast_surface_preparation: 8
+  layout_marking: 9
+  rebar_work: 10
+  inspection: 11
+  robot_transport_setup: 12
+  other: 13
+  unknown: 0
+
+# Fields explicitly excluded from generative targets (research-safe).
+excluded_from_generation:
+  - task_duration_observed
+  - visible_segment_duration_sec
+  - duration_validity
+  - usable_for_productivity
+  - any productivity or cycle_time proxy
+
+# Logical consistency rules for synthetic scenario validation (mirrors validate_extractions.py).
+scenario_constraints:
+  fresh_concrete_activities:
+    - fresh_concrete_leveling
+    - fresh_concrete_finishing
+  fresh_surfaces: [wet_concrete, pre_pour_slab, partially_set]
+  post_cast_activities:
+    - post_cast_floor_grinding
+    - post_cast_coating
+    - post_cast_surface_preparation
+  hardened_surfaces: [hardened_concrete]
+  workflow_activity_pairs:
+    rebar_work: [pre-pour]
+    formwork_work: [pre-pour, post-cast]
+    mep_conduit_work: [pre-pour]
+    layout_marking: [pre-pour]
+    concrete_pouring: [pour]
+    fresh_concrete_leveling: [pour]
+    fresh_concrete_finishing: [pour]
+    post_cast_floor_grinding: [post-cast]
+    post_cast_coating: [post-cast]
+    post_cast_surface_preparation: [post-cast]
+
+# Recommended augmentation strategy given n=14 seeds.
+augmentation_strategy:
+  primary_approach: constraint_guided_scenario_expansion
+  rationale: >
+    Fourteen independent seed records are insufficient for stable GAN training alone.
+    Phase 3A uses rule-based scenario expansion with logical filters; Phase 3B pilots
+    tabular generative models only after expanded seed count or bootstrap validation.
+  phases:
+    phase_3a:
+      name: constraint_guided_scenario_expansion
+      method: rule_based_combinatorial
+      target_synthetic_count: 50
+      requires_human_review: yes
+    phase_3b:
+      name: tabular_generative_pilot
+      method: ctgan_or_tvae
+      min_recommended_seeds: 30
+      target_synthetic_count: 50
+      requires_human_review: yes
+      status: pilot_complete_2026_06_28
+    phase_3c:
+      name: deployment_readiness_index
+      method: weighted_scenario_scoring
+      status: framework_complete
+
+# Scenario families for Mivan high-rise robot deployment readiness.
+scenario_families:
+  - id: SF-MIVAN-SLAB-CYCLE
+    description: Mivan slab-cycle labour and access conditions (pre-pour → pour → post-cast)
+    seed_filter: video_category=mivan
+  - id: SF-ROBOT-FRESH-CONCRETE
+    description: Fresh-concrete robot operations during pour stage
+    seed_filter: activity_group=fresh_concrete_leveling
+  - id: SF-ROBOT-POST-CAST
+    description: Post-cast robot finishing (grinding, coating)
+    seed_filter: workflow_stage=post-cast AND video_category=robot
+  - id: SF-DEPLOYMENT-JOINT
+    description: Joint Mivan workflow + robot task pairing for readiness assessment
+    seed_filter: paired_mivan_robot_by_workflow_stage
+
+# Synthetic output schema (template: data/templates/synthetic_scenario_dataset_template.csv).
+synthetic_output:
+  required_metadata:
+    - scenario_id
+    - is_synthetic
+    - generation_method
+    - source_seed_id
+    - scenario_family
+    - logical_validity
+    - constraint_violation_count
+    - synthetic_provenance
+    - generation_date
+  synthetic_provenance_values:
+    - rule_expanded
+    - tabular_gan
+    - tabular_vae
+    - bootstrap_perturbation
+
+# Evaluation metrics for future synthetic batches (design targets).
+evaluation_metrics:
+  - constraint_violation_rate
+  - marginal_distribution_similarity
+  - activity_workflow_coherence
+  - manufacturer_stratum_preservation
+  - duplicate_seed_leakage_rate
+
+research_limits:
+  - no_productivity_claims_from_synthetic_data
+  - no_field_validated_readiness_scores_until_independent_validation
+  - e3_manufacturer_specs_not_used_as_gan_training_labels
+  - synthetic_records_marked_is_synthetic=yes_always

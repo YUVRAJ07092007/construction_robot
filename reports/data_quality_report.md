@@ -1,6 +1,6 @@
 # Data Quality Report
 
-**Status:** Stage 1 video data extraction is **complete** (pending human review). This report describes the final Stage 1 snapshot.
+**Status:** Stage 1 approved (2026-06-27). Stage 2 GAN seed conversion **complete** (2026-06-28).
 
 > The dataset is a secondary observational dataset derived from publicly available videos and manufacturer-reported specifications. It is not direct field-measured productivity data.
 
@@ -13,6 +13,10 @@
 | robot_video_observations.csv | 11 |
 | mivan_video_observations.csv | 30 |
 | cleaned_video_dataset.csv | 17 |
+| gan_seed_dataset.csv | 14 |
+| synthetic_scenario_dataset.csv | 50 |
+| synthetic_scenario_dataset_gan.csv | 50 |
+| synthetic_scenario_dataset_all.csv | 100 |
 | manufacturer_specs.csv | 10 |
 
 ## Summary metrics
@@ -25,6 +29,11 @@
 - Mivan observations: 30
 - Manufacturer spec records: 10
 - Cleaned modelling subset rows: 17
+- GAN seed records: 14
+- Synthetic scenario records (rule): 50
+- Synthetic scenario records (GAN pilot): 50
+- Synthetic scenario records (combined): 100
+- Cleaned rows promoted to modelling_ready: 14
 
 ## Evidence-level distribution (observations)
 
@@ -83,21 +92,38 @@
 **mivan:** evidence_level missing=0, access_condition missing=0
 **cleaned:** evidence_level missing=0, data_use missing=0, access_condition missing=0
 
-## Records not suitable for modelling
+## Modelling readiness
 
-- Cleaned rows not marked modelling_ready or with productivity blocked: 17
+- modelling_ready cleaned rows: 14
+- Not promoted (structured_coding / qualitative_only): 3
+- Seed records (independent sample only): 14
 - Invalid-duration segments: 46
+- usable_for_productivity=yes count: 0 (should be 0)
 
-## Stage 1 completion
+## GAN seed dataset
 
-- All priority sources screened (no `pending_screening` in registry)
-- All structured-extraction videos segmented and coded
-- Robot source candidates: 4 screened, 4 deferred to post-Stage-1 expansion
-- Validation passing; awaiting human review sign-off before Stage 2
+- Mivan seeds: 7
+- Robot seeds: 7
+- All seeds duration_excluded=yes: True
 
-## Optional future expansion (not in Stage 1 scope)
+## Synthetic scenario dataset (Phase 3.1)
+
+- Rule-expanded scenarios: 50
+- All is_synthetic=yes: True
+- SF-DEPLOYMENT-JOINT: 10
+- SF-MIVAN-SLAB-CYCLE: 16
+- SF-ROBOT-FRESH-CONCRETE: 16
+- SF-ROBOT-POST-CAST: 8
+
+## Stage completion
+
+- Stage 1 sign-off: `docs/stage1_signoff.md`
+- Stage 2 seed conversion: `docs/stage2_signoff.md`
+- Phase 3.1 rule expansion: `reports/synthetic_expansion_report.md`
+- Phase 3B tabular GAN pilot: `reports/tabular_gan_pilot_report.md`
+- Robot source candidates: 4 deferred to optional expansion
+
+## Optional future expansion
 
 - Additional comparison robots (Floor Master, Kajima, rebar tying, inspection)
-- More independent fresh-concrete leveling observations from verified sources
-- Mivan playlist entries only where workflow adds non-duplicate value
-- Re-screen low-confidence or excluded sources before any modelling_ready promotion
+- Field validation before quantitative deployment-readiness claims
