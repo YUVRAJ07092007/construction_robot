@@ -1,0 +1,312 @@
+# Central data dictionary for construction robot video extraction pipeline.
+# Schema is backward-compatible; new columns extend existing CSV headers.
+
+video_metadata.csv:
+  video_id:
+    description: Unique registry identifier (e.g. R09, M06, T01)
+    data_type: string
+    allowed_values: any
+    required: true
+    evidence_level_required: false
+    notes: Primary key for source registry
+  video_url:
+    description: Canonical URL for the source
+    data_type: string
+    required: true
+    evidence_level_required: false
+  video_category:
+    description: Source category
+    data_type: categorical
+    allowed_values: [robot, mivan, technical_spec]
+    required: true
+    evidence_level_required: false
+  manufacturer_name:
+    description: Robot or equipment manufacturer
+    data_type: string
+    allowed_values: [BrightMaster, Bright Dream, Floor Master, Kajima, unknown, any]
+    required: false
+    evidence_level_required: false
+    notes: Robot-agnostic; BrightMaster is one source among many
+  robot_brand:
+    description: Commercial brand name
+    data_type: string
+    allowed_values: [any, unknown]
+    required: false
+    evidence_level_required: false
+  robot_model:
+    description: Model identifier when visible or reported
+    data_type: string
+    allowed_values: [any, unknown]
+    required: false
+    evidence_level_required: false
+  robot_category:
+    description: Functional robot type
+    data_type: categorical
+    allowed_values:
+      - concrete_leveling_robot
+      - concrete_finishing_robot
+      - floor_grinding_robot
+      - rebar_tying_robot
+      - layout_robot
+      - inspection_robot
+      - coating_robot
+      - other
+      - unknown
+    required: false
+    evidence_level_required: false
+  robot_activity_group:
+    description: Taxonomy-aligned activity group
+    data_type: categorical
+    allowed_values: see config/activity_taxonomy.yaml
+    required: false
+    evidence_level_required: false
+  manufacturer_verified:
+    description: Whether manufacturer attribution is confirmed
+    data_type: categorical
+    allowed_values: [yes, no, unknown]
+    required: false
+    evidence_level_required: false
+  comparison_robot:
+    description: Non-primary manufacturer robot included for comparison
+    data_type: categorical
+    allowed_values: [yes, no]
+    required: false
+    evidence_level_required: false
+  suitability_score:
+    description: Total suitability score 0-14 (alias of suitability_total_score)
+    data_type: integer
+    allowed_values: "0-14 or blank for pools/specs"
+    required: false
+    evidence_level_required: false
+  suitability_total_score:
+    description: Sum of seven 0-2 criteria scores
+    data_type: integer
+    required: false
+    evidence_level_required: false
+  suitability_band:
+    description: Classification band from score
+    data_type: categorical
+    allowed_values: [exclude, qualitative_only, structured_extraction, source_pool, manufacturer_reported_E3]
+    required: false
+    evidence_level_required: false
+  data_use:
+    description: Intended research use of the record
+    data_type: categorical
+    allowed_values: [exclude, qualitative_only, structured_coding, modelling_ready]
+    required: false
+    evidence_level_required: false
+  manual_data_use_override:
+    description: Manual override of computed data_use
+    data_type: categorical
+    allowed_values: [exclude, qualitative_only, structured_coding, modelling_ready, ""]
+    required: false
+    evidence_level_required: false
+  is_duplicate_or_parallel:
+    description: Whether source duplicates another workflow video
+    data_type: categorical
+    allowed_values: [yes, no]
+    required: false
+    evidence_level_required: false
+  duplicate_group_id:
+    description: Shared ID for parallel/duplicate sources
+    data_type: string
+    required: false
+    evidence_level_required: false
+  independent_sample:
+    description: Counts as independent sample for analysis
+    data_type: categorical
+    allowed_values: [yes, no, ""]
+    required: false
+    evidence_level_required: false
+  access_condition:
+    description: Work-zone access/congestion for labour or robot
+    data_type: categorical
+    allowed_values: [open, partially_restricted, congested, unknown]
+    required: false
+    evidence_level_required: false
+
+video_segments.csv:
+  segment_id:
+    description: Unique segment identifier
+    data_type: string
+    required: true
+    evidence_level_required: false
+  video_id:
+    description: Parent video registry ID
+    data_type: string
+    required: true
+    evidence_level_required: false
+  visible_segment_duration_sec:
+    description: Visible clip length in seconds (not productivity time)
+    data_type: float
+    required: false
+    evidence_level_required: false
+  segment_duration_sec:
+    description: Legacy alias; same as visible_segment_duration_sec
+    data_type: float
+    required: true
+    evidence_level_required: false
+  activity_type:
+    description: Segment activity label (taxonomy-aligned)
+    data_type: categorical
+    allowed_values: see config/activity_taxonomy.yaml
+    required: true
+    evidence_level_required: false
+  duration_validity:
+    description: Whether duration may be used quantitatively
+    data_type: categorical
+    allowed_values: [valid, invalid, valid_for_visible_segment_only]
+    required: true
+    evidence_level_required: false
+  duration_validity_reason:
+    description: Explanation for duration validity assignment
+    data_type: string
+    required: false
+    evidence_level_required: false
+  continuous_unedited_segment:
+    description: Whether clip appears continuous and unedited
+    data_type: categorical
+    allowed_values: [yes, no, unknown]
+    required: false
+    evidence_level_required: false
+  usable_for_productivity:
+    description: May duration support productivity claims
+    data_type: categorical
+    allowed_values: [yes, no]
+    required: false
+    evidence_level_required: false
+    notes: Public videos should almost always be no
+
+robot_video_observations.csv:
+  observation_id:
+    description: Unique robot observation ID
+    data_type: string
+    required: true
+    evidence_level_required: false
+  robot_activity_type:
+    description: Coded robot activity
+    data_type: categorical
+    allowed_values: see config/activity_taxonomy.yaml
+    required: true
+    evidence_level_required: false
+  evidence_level:
+    description: Evidence tier for coded values
+    data_type: categorical
+    allowed_values: [E1, E2, E3, E4, E5]
+    required: true
+    evidence_level_required: true
+  source_type:
+    description: Provenance of observation values
+    data_type: categorical
+    allowed_values: [video_observed, video_estimated, manufacturer_reported, computed, assumption_based]
+    required: false
+    evidence_level_required: false
+  coding_confidence:
+    description: Coder confidence in extracted values
+    data_type: categorical
+    allowed_values: [high, medium, low]
+    required: true
+    evidence_level_required: false
+  data_use:
+    description: Research use classification
+    data_type: categorical
+    allowed_values: [exclude, qualitative_only, structured_coding, modelling_ready]
+    required: false
+    evidence_level_required: false
+  label_revision_note:
+    description: Note when activity label was corrected
+    data_type: string
+    required: false
+    evidence_level_required: false
+  access_condition:
+    description: Not primary in robot table; use human_robot_separation and obstacle fields
+    data_type: string
+    required: false
+    evidence_level_required: false
+
+mivan_video_observations.csv:
+  observation_id:
+    description: Unique Mivan observation ID
+    data_type: string
+    required: true
+    evidence_level_required: false
+  slab_activity_type:
+    description: Mivan workflow activity
+    data_type: categorical
+    allowed_values: see config/activity_taxonomy.yaml
+    required: true
+    evidence_level_required: false
+  access_condition:
+    description: Site access/congestion during activity
+    data_type: categorical
+    allowed_values: [open, partially_restricted, congested, unknown]
+    required: true
+    evidence_level_required: false
+  evidence_level:
+    data_type: categorical
+    allowed_values: [E1, E2]
+    required: true
+    evidence_level_required: true
+  source_type:
+    data_type: categorical
+    allowed_values: [video_observed, video_estimated]
+    required: false
+    evidence_level_required: false
+
+manufacturer_specs.csv:
+  spec_id:
+    description: Unique specification record ID
+    data_type: string
+    required: true
+    evidence_level_required: false
+  evidence_level:
+    description: Must be E3 for manufacturer pages
+    data_type: categorical
+    allowed_values: [E3]
+    required: true
+    evidence_level_required: true
+  source_type:
+    description: Must be manufacturer_reported
+    data_type: categorical
+    allowed_values: [manufacturer_reported]
+    required: false
+    evidence_level_required: false
+  manufacturer_verified:
+    data_type: categorical
+    allowed_values: [yes, no, unknown]
+    required: false
+    evidence_level_required: false
+
+cleaned_video_dataset.csv:
+  observation_id:
+    description: Cross-category modelling subset key
+    data_type: string
+    required: true
+    evidence_level_required: false
+  activity_type:
+    description: Unified activity label
+    data_type: categorical
+    allowed_values: see config/activity_taxonomy.yaml
+    required: true
+    evidence_level_required: false
+  access_condition:
+    description: Standard access field across robot and Mivan rows
+    data_type: categorical
+    allowed_values: [open, partially_restricted, congested, unknown]
+    required: true
+    evidence_level_required: false
+  evidence_level:
+    data_type: categorical
+    allowed_values: [E1, E2]
+    required: true
+    evidence_level_required: true
+  data_use:
+    data_type: categorical
+    allowed_values: [exclude, qualitative_only, structured_coding, modelling_ready]
+    required: false
+    evidence_level_required: false
+  usable_for_productivity:
+    data_type: categorical
+    allowed_values: [yes, no]
+    required: false
+    evidence_level_required: false

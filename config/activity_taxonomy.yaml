@@ -1,0 +1,63 @@
+# Standardized activity labels for robot and Mivan video coding.
+# Separate fresh-concrete from post-cast activities.
+
+activity_groups:
+  rebar_work:
+    description: Pre-pour reinforcement fixing, tying, placement
+    workflow_stage: pre-pour
+  formwork_work:
+    description: Aluminium/Mivan panel erection, alignment, stripping prep
+    workflow_stage: pre-pour
+  mep_conduit_work:
+    description: Electrical/conduit installation before pour
+    workflow_stage: pre-pour
+  concrete_pouring:
+    description: Slab or wall concrete placement and vibration
+    workflow_stage: pour
+  fresh_concrete_leveling:
+    description: Leveling/screeding on wet or freshly placed concrete
+    workflow_stage: pour
+    surface: wet_concrete
+  fresh_concrete_finishing:
+    description: Troweling/smoothing on wet or partially set concrete
+    workflow_stage: pour
+    surface: wet_concrete
+  post_cast_floor_grinding:
+    description: Grinding on hardened floor or wall/ceiling surfaces
+    workflow_stage: post-cast
+    surface: hardened_concrete
+  post_cast_surface_preparation:
+    description: Putty prep, patching, substrate preparation after cast
+    workflow_stage: post-cast
+  post_cast_coating:
+    description: Paint, coating, or sealant on hardened surfaces
+    workflow_stage: post-cast
+    surface: hardened_concrete
+  layout_marking:
+    description: Survey, layout, or measurement robot activity
+    workflow_stage: pre-pour
+  inspection:
+    description: Quality or progress inspection tasks
+    workflow_stage: any
+  robot_transport_setup:
+    description: Lifting, positioning, or site logistics for robots
+    workflow_stage: any
+  other:
+    description: Recognized but uncategorized activity
+  unknown:
+    description: Activity not confidently identifiable
+
+legacy_label_map:
+  concrete_leveling: fresh_concrete_leveling
+  concrete_finishing: post_cast_coating
+  coating_finishing: post_cast_coating
+  floor_grinding: post_cast_floor_grinding
+  formwork: formwork_work
+  formwork_process: formwork_work
+  formwork_components: formwork_work
+  wall_panel_erection: formwork_work
+  post_cast_finishing: post_cast_surface_preparation
+
+correction_principle: >
+  Do not label indoor coating or hardened-surface finishing as fresh concrete finishing.
+  When uncertain, use unknown or other rather than guessing.

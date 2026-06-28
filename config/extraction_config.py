@@ -23,8 +23,9 @@ EXCEPTION_ACTIVITY_TYPES = frozenset(
 ALLOW_DUAL_CATEGORY_CODING = True
 
 # --- Workflow ---
-# First pass: manual video review + CSV coding. Python enforces schema and logic rules.
-WORKFLOW = "manual_coding_with_validation"
+# Stage 1 only: manual video review + CSV coding + validation. Stop for review when complete.
+# Stage 2 (GAN seed conversion) is deferred until Stage 1 is reviewed and approved.
+WORKFLOW = "stage_1_only_stop_for_review"
 
 # --- Suitability criteria (max 2 points each, total max 14) ---
 SUITABILITY_CRITERIA = {

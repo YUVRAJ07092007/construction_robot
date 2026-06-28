@@ -377,6 +377,8 @@ The extracted dataset should be described in the paper as follows:
 
 This is the **first-stage algorithm** for video data extraction only.
 
-After this algorithm is finalized, the next algorithm should be for:
+**Current project decision:** Finish Stage 1, validate outputs, and **stop for review**. Do not implement Stage 2 (GAN-ready seed conversion) until Stage 1 datasets and coding are reviewed and approved.
+
+A future algorithm may cover:
 
 **Cleaning and converting the extracted dataset into GAN-ready seed data.**
